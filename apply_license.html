@@ -304,6 +304,7 @@
         let userExistingServices = [];
         let selectedCircles = [];
         let selectedSSAs = [];
+        let currentBaseFees = null; // Store base fees for calculation
 
         // India's 22 Telecom Circles (LSAs) - Grouped by Category
         const telecomCircles = {
@@ -473,16 +474,60 @@
 
             const data = licenseData[cat][svc];
 
+            // Parse and store base fees for calculation
+            currentBaseFees = {
+                entry: parseFeeValue(data.entry),
+                pbg: parseFeeValue(data.pbg),
+                fbg: parseFeeValue(data.fbg),
+                networth: data.networth,
+                entryText: data.entry,
+                pbgText: data.pbg,
+                fbgText: data.fbg
+            };
+
+            // Check if this service requires per-unit calculation
+            const isCircleWise = circleBasedServices.circleWise.includes(svc);
+            const isSSAWise = circleBasedServices.ssaWise.includes(svc);
+            const showCalculation = isCircleWise || isSSAWise;
+
             let html = `
                 <div style="background:#f0f9ff; padding:15px; border-left:4px solid var(--primary); margin-bottom:20px;">
                     <strong><i class="fa-solid fa-scale-balanced"></i> Selected License:</strong> ${cat} - ${svc}
                 </div>
                 <table class="req-table">
-                    <tr><th>Entry Fee (Non-Refundable)</th><td>${data.entry}</td></tr>
-                    <tr><th>Performance Bank Guarantee (PBG)</th><td>${data.pbg}</td></tr>
-                    <tr><th>Financial Bank Guarantee (FBG)</th><td>${data.fbg}</td></tr>
+                    <tr>
+                        <th>Entry Fee (Per ${isSSAWise ? 'SSA' : isCircleWise ? 'Circle' : 'License'})</th>
+                        <td id="fee-entry-base">${data.entry}</td>
+                    </tr>
+                    <tr><th>Performance Bank Guarantee (PBG)</th><td id="fee-pbg-base">${data.pbg}</td></tr>
+                    <tr><th>Financial Bank Guarantee (FBG)</th><td id="fee-fbg-base">${data.fbg}</td></tr>
                     <tr><th>Min. Net Worth Required</th><td>${data.networth}</td></tr>
                 </table>
+                ${showCalculation ? `
+                <div id="fee-calculation" style="display:none; margin-top:15px; padding:20px; background:linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius:12px; border:1px solid #6ee7b7;">
+                    <h4 style="margin:0 0 15px 0; color:#065f46; font-size:1rem;">
+                        <i class="fa-solid fa-calculator"></i> Fee Calculation Summary
+                    </h4>
+                    <div style="display:grid; gap:10px;">
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed #a7f3d0;">
+                            <span>Entry Fee:</span>
+                            <span id="calc-entry" style="font-weight:600; color:#065f46;">-</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed #a7f3d0;">
+                            <span>PBG:</span>
+                            <span id="calc-pbg" style="font-weight:600; color:#065f46;">-</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed #a7f3d0;">
+                            <span>FBG:</span>
+                            <span id="calc-fbg" style="font-weight:600; color:#065f46;">-</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:12px 0; margin-top:5px; border-top:2px solid #10b981; font-size:1.1rem;">
+                            <span style="font-weight:700; color:#065f46;">Total Estimated Cost:</span>
+                            <span id="calc-total" style="font-weight:700; color:#059669; font-size:1.2rem;">-</span>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
             `;
 
             // Add coverage area selection based on service type
@@ -596,6 +641,83 @@
             return '';
         }
 
+        // Parse fee value from string (e.g., "₹ 2 Lakhs" -> 200000)
+        function parseFeeValue(feeStr) {
+            if (!feeStr || feeStr === 'Nil' || feeStr === 'N/A') return 0;
+
+            // Extract the first number and unit
+            const str = feeStr.toString().toLowerCase();
+
+            // Handle special cases with parentheses (take first value)
+            let cleanStr = str.split('(')[0].trim();
+
+            // Extract number
+            const numMatch = cleanStr.match(/[\d,.]+/);
+            if (!numMatch) return 0;
+
+            let num = parseFloat(numMatch[0].replace(/,/g, ''));
+
+            // Apply multiplier based on unit
+            if (cleanStr.includes('crore')) {
+                num *= 10000000; // 1 crore = 10 million
+            } else if (cleanStr.includes('lakh')) {
+                num *= 100000; // 1 lakh = 100,000
+            } else if (cleanStr.includes('thousand') || cleanStr.includes('k')) {
+                num *= 1000;
+            }
+
+            return num;
+        }
+
+        // Format number as Indian currency
+        function formatIndianCurrency(num) {
+            if (num === 0) return 'Nil';
+            if (num >= 10000000) {
+                return '₹ ' + (num / 10000000).toFixed(2).replace(/\.00$/, '') + ' Crore';
+            } else if (num >= 100000) {
+                return '₹ ' + (num / 100000).toFixed(2).replace(/\.00$/, '') + ' Lakhs';
+            } else if (num >= 1000) {
+                return '₹ ' + num.toLocaleString('en-IN');
+            }
+            return '₹ ' + num;
+        }
+
+        // Update fee calculation based on selections
+        function updateFeeCalculation() {
+            const calcDiv = document.getElementById('fee-calculation');
+            if (!calcDiv || !currentBaseFees) return;
+
+            const svc = document.getElementById('service-type').value;
+            const isCircleWise = circleBasedServices.circleWise.includes(svc);
+            const isSSAWise = circleBasedServices.ssaWise.includes(svc);
+
+            const count = isSSAWise ? selectedSSAs.length : selectedCircles.length;
+            const unit = isSSAWise ? 'SSA' : 'Circle';
+
+            if (count === 0) {
+                calcDiv.style.display = 'none';
+                return;
+            }
+
+            calcDiv.style.display = 'block';
+
+            const entryTotal = currentBaseFees.entry * count;
+            const pbgTotal = currentBaseFees.pbg * count;
+            const fbgTotal = currentBaseFees.fbg * count;
+            const grandTotal = entryTotal + pbgTotal + fbgTotal;
+
+            // Update display
+            document.getElementById('calc-entry').innerHTML =
+                `${currentBaseFees.entryText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(entryTotal)}</strong>`;
+            document.getElementById('calc-pbg').innerHTML =
+                currentBaseFees.pbg === 0 ? 'Nil' :
+                `${currentBaseFees.pbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(pbgTotal)}</strong>`;
+            document.getElementById('calc-fbg').innerHTML =
+                currentBaseFees.fbg === 0 ? 'Nil' :
+                `${currentBaseFees.fbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(fbgTotal)}</strong>`;
+            document.getElementById('calc-total').textContent = formatIndianCurrency(grandTotal);
+        }
+
         // Toggle circle selection
         function toggleCircle(circle, element, event) {
             if (event) event.stopPropagation();
@@ -609,6 +731,9 @@
                 element.classList.add('selected');
             }
             document.getElementById('circle-count').textContent = `${selectedCircles.length} selected`;
+
+            // Update fee calculation
+            updateFeeCalculation();
         }
 
         // Populate SSAs for selected circle
@@ -661,6 +786,9 @@
             if (selectedSSAs.length <= 4) {
                 document.getElementById('upgrade-notice').classList.remove('visible');
             }
+
+            // Update fee calculation
+            updateFeeCalculation();
         }
 
         function updateSSACount() {
