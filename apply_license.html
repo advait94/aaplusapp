@@ -106,6 +106,44 @@
         .btn-primary:disabled { background-color: #9ca3af; cursor: not-allowed; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Circle/SSA Selection Styles */
+        .coverage-section { margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .coverage-section h4 { margin: 0 0 15px 0; color: #1e40af; font-size: 1rem; }
+        .circle-group { margin-bottom: 15px; }
+        .circle-group-header { font-weight: 600; color: #475569; font-size: 0.85rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .checkbox-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .checkbox-item {
+            display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+            background: white; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer;
+            font-size: 0.9rem; transition: all 0.2s;
+        }
+        .checkbox-item:hover { border-color: var(--primary); background: #eff6ff; }
+        .checkbox-item.selected { border-color: var(--primary); background: #dbeafe; color: var(--primary); font-weight: 500; }
+        .checkbox-item input { display: none; }
+        .selection-count {
+            display: inline-block; padding: 4px 10px; background: #dbeafe; color: var(--primary);
+            border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-left: 10px;
+        }
+        .upgrade-notice {
+            background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px;
+            margin-top: 15px; display: none;
+        }
+        .upgrade-notice.visible { display: block; }
+        .upgrade-notice i { color: #f59e0b; margin-right: 8px; }
+        .upgrade-btn {
+            background: #f59e0b; color: white; border: none; padding: 8px 16px;
+            border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 10px;
+        }
+        .upgrade-btn:hover { background: #d97706; }
+        .nationwide-badge {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px;
+            background: linear-gradient(135deg, #10b981, #059669); color: white;
+            border-radius: 8px; font-weight: 600; font-size: 1rem;
+        }
+        .nationwide-badge i { font-size: 1.2rem; }
+        .ssa-selector { margin-top: 15px; }
+        .ssa-selector select { margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -256,6 +294,50 @@
         // User's existing licenses (populated from profile)
         let userExistingLicenses = [];
         let userExistingServices = [];
+        let selectedCircles = [];
+        let selectedSSAs = [];
+
+        // India's 22 Telecom Circles (LSAs) - Grouped by Category
+        const telecomCircles = {
+            'Metro': ['Delhi', 'Mumbai', 'Kolkata', 'Chennai'],
+            'Category A': ['Maharashtra', 'Gujarat', 'Andhra Pradesh', 'Karnataka', 'Tamil Nadu'],
+            'Category B': ['Kerala', 'Punjab', 'Haryana', 'UP (West)', 'UP (East)', 'Rajasthan', 'Madhya Pradesh', 'West Bengal'],
+            'Category C': ['Himachal Pradesh', 'Bihar', 'Odisha', 'Assam', 'North East', 'Jammu & Kashmir']
+        };
+
+        // SSAs for each Telecom Circle
+        const circleSSAs = {
+            'Delhi': ['Central Delhi', 'East Delhi', 'New Delhi', 'North Delhi', 'North East Delhi', 'North West Delhi', 'Shahdara', 'South Delhi', 'South East Delhi', 'South West Delhi', 'West Delhi', 'Ghaziabad', 'Noida', 'Faridabad', 'Gurgaon'],
+            'Mumbai': ['Mumbai City', 'Mumbai Suburban', 'Thane', 'Navi Mumbai', 'Kalyan-Dombivli', 'Vasai-Virar', 'Bhiwandi', 'Panvel', 'Ulhasnagar'],
+            'Kolkata': ['Kolkata', 'Howrah', 'North 24 Parganas', 'South 24 Parganas', 'Hooghly'],
+            'Chennai': ['Chennai North', 'Chennai South', 'Chennai Central', 'Tambaram', 'Avadi', 'Ambattur', 'Tiruvallur', 'Kancheepuram'],
+            'Maharashtra': ['Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Kolhapur', 'Sangli', 'Jalgaon', 'Akola', 'Latur', 'Ahmednagar', 'Chandrapur', 'Parbhani', 'Satara', 'Ratnagiri', 'Sindhudurg'],
+            'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar', 'Anand', 'Nadiad', 'Mehsana', 'Bharuch', 'Valsad', 'Navsari', 'Kutch'],
+            'Andhra Pradesh': ['Hyderabad', 'Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Rajahmundry', 'Tirupati', 'Kakinada', 'Kadapa', 'Anantapur', 'Warangal', 'Nizamabad', 'Karimnagar', 'Khammam'],
+            'Karnataka': ['Bengaluru Urban', 'Bengaluru Rural', 'Mysuru', 'Mangaluru', 'Hubballi-Dharwad', 'Belagavi', 'Kalaburagi', 'Ballari', 'Tumakuru', 'Shivamogga', 'Davangere', 'Raichur', 'Bidar', 'Hassan', 'Udupi'],
+            'Tamil Nadu': ['Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Erode', 'Vellore', 'Thoothukudi', 'Dindigul', 'Thanjavur', 'Ranipet', 'Tiruvannamalai', 'Sivakasi', 'Karur', 'Namakkal'],
+            'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam', 'Kannur', 'Alappuzha', 'Kottayam', 'Palakkad', 'Malappuram', 'Kasaragod', 'Pathanamthitta', 'Idukki', 'Wayanad'],
+            'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Pathankot', 'Hoshiarpur', 'Moga', 'Ferozepur', 'Sangrur', 'Gurdaspur', 'Kapurthala', 'Fazilka'],
+            'Haryana': ['Faridabad', 'Gurgaon', 'Panipat', 'Ambala', 'Yamunanagar', 'Rohtak', 'Hisar', 'Karnal', 'Sonipat', 'Panchkula', 'Bhiwani', 'Sirsa', 'Bahadurgarh', 'Jind', 'Thanesar', 'Kaithal', 'Rewari', 'Palwal'],
+            'UP (West)': ['Ghaziabad', 'Noida', 'Meerut', 'Agra', 'Aligarh', 'Moradabad', 'Saharanpur', 'Bareilly', 'Muzaffarnagar', 'Mathura', 'Rampur', 'Shahjahanpur', 'Firozabad', 'Bulandshahr', 'Hapur', 'Sambhal'],
+            'UP (East)': ['Lucknow', 'Kanpur', 'Varanasi', 'Allahabad', 'Gorakhpur', 'Ghazipur', 'Jaunpur', 'Azamgarh', 'Mirzapur', 'Sultanpur', 'Faizabad', 'Basti', 'Deoria', 'Ballia', 'Mau', 'Pratapgarh'],
+            'Rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Bikaner', 'Ajmer', 'Bhilwara', 'Alwar', 'Sikar', 'Bharatpur', 'Pali', 'Sri Ganganagar', 'Chittorgarh', 'Jhunjhunu', 'Nagaur', 'Hanumangarh'],
+            'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Dewas', 'Satna', 'Ratlam', 'Rewa', 'Murwara', 'Singrauli', 'Burhanpur', 'Khandwa', 'Morena', 'Bhind', 'Chhindwara', 'Guna', 'Shivpuri', 'Vidisha', 'Damoh', 'Mandsaur', 'Khargone'],
+            'West Bengal': ['Asansol', 'Siliguri', 'Durgapur', 'Bardhaman', 'Malda', 'Baharampur', 'Habra', 'Kharagpur', 'Shantipur', 'Dankuni', 'Dhulian', 'Ranaghat', 'Haldia', 'Raiganj', 'Krishnanagar', 'Nabadwip', 'Medinipur', 'Jalpaiguri', 'Balurghat', 'Basirhat'],
+            'Himachal Pradesh': ['Shimla', 'Mandi', 'Solan', 'Dharamshala', 'Palampur', 'Baddi', 'Nahan', 'Hamirpur', 'Una', 'Kullu', 'Bilaspur', 'Chamba', 'Kangra', 'Kinnaur', 'Lahaul-Spiti', 'Sirmaur'],
+            'Bihar': ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Purnia', 'Darbhanga', 'Bihar Sharif', 'Arrah', 'Begusarai', 'Katihar', 'Munger', 'Chhapra', 'Danapur', 'Saharsa', 'Sasaram', 'Hajipur', 'Dehri', 'Siwan', 'Motihari', 'Nawada', 'Bagaha'],
+            'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Berhampur', 'Sambalpur', 'Puri', 'Balasore', 'Bhadrak', 'Baripada', 'Jharsuguda', 'Jeypore', 'Bargarh', 'Rayagada', 'Paradip', 'Bhawanipatna', 'Dhenkanal', 'Kendujhar', 'Sunabeda'],
+            'Assam': ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Nagaon', 'Tinsukia', 'Tezpur', 'Bongaigaon', 'Dhubri', 'North Lakhimpur', 'Karimganj', 'Sivasagar', 'Goalpara', 'Barpeta', 'Mangaldoi', 'Nalbari', 'Rangia', 'Hojai'],
+            'North East': ['Imphal', 'Shillong', 'Agartala', 'Aizawl', 'Kohima', 'Itanagar', 'Gangtok', 'Dimapur', 'Tura', 'Tawang', 'Lunglei', 'Mon', 'Churachandpur', 'Ukhrul'],
+            'Jammu & Kashmir': ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Sopore', 'Leh', 'Kargil', 'Udhampur', 'Kathua', 'Poonch', 'Rajouri', 'Doda', 'Kishtwar', 'Kupwara', 'Pulwama', 'Budgam', 'Ganderbal', 'Bandipora', 'Shopian', 'Kulgam', 'Reasi', 'Ramban', 'Samba']
+        };
+
+        // Services that require circle/SSA selection
+        const circleBasedServices = {
+            'nationwide': ['ISP-A', 'ISP-A (VNO)', 'UL (All Services)', 'UL(VNO) All Services', 'NLD', 'ILD', 'GMPCS', 'GMPCS (VNO)'],
+            'circleWise': ['ISP-B', 'ISP-B (VNO)', 'Access Service', 'M2M', 'M2M (VNO)', 'PMRTS', 'PMRTS (VNO)'],
+            'ssaWise': ['ISP-C', 'ISP-C (VNO)']
+        };
 
         const commonDocs = [
             "Certificate of Incorporation (COI)",
@@ -355,8 +437,12 @@
             const svc = document.getElementById('service-type').value;
             if(!svc) return;
 
+            // Reset selections
+            selectedCircles = [];
+            selectedSSAs = [];
+
             const data = licenseData[cat][svc];
-            
+
             let html = `
                 <div style="background:#f0f9ff; padding:15px; border-left:4px solid var(--primary); margin-bottom:20px;">
                     <strong><i class="fa-solid fa-scale-balanced"></i> Selected License:</strong> ${cat} - ${svc}
@@ -367,7 +453,12 @@
                     <tr><th>Financial Bank Guarantee (FBG)</th><td>${data.fbg}</td></tr>
                     <tr><th>Min. Net Worth Required</th><td>${data.networth}</td></tr>
                 </table>
+            `;
 
+            // Add coverage area selection based on service type
+            html += renderCoverageSection(svc);
+
+            html += `
                 <h3>Required Documents Checklist</h3>
                 <ul class="doc-list">
                     ${commonDocs.map(d => `<li>${d}</li>`).join('')}
@@ -379,6 +470,181 @@
             document.getElementById('step2').style.display = 'block';
             document.getElementById('confirm-radio').checked = false; // Reset radio
             document.getElementById('step3').style.display = 'none';
+        }
+
+        // Render coverage area selection UI
+        function renderCoverageSection(svc) {
+            // Check service type
+            if (circleBasedServices.nationwide.includes(svc)) {
+                return `
+                    <div class="coverage-section">
+                        <h4><i class="fa-solid fa-globe"></i> Service Coverage Area</h4>
+                        <div class="nationwide-badge">
+                            <i class="fa-solid fa-check-circle"></i>
+                            Pan-India / Nationwide License
+                        </div>
+                        <p style="margin-top:10px; color:#666; font-size:0.9rem;">
+                            This license authorizes you to operate across all 22 Licensed Service Areas (LSAs) in India.
+                        </p>
+                    </div>
+                `;
+            }
+
+            if (circleBasedServices.circleWise.includes(svc)) {
+                return `
+                    <div class="coverage-section">
+                        <h4><i class="fa-solid fa-map-marked-alt"></i> Select Telecom Circles (LSAs)
+                            <span class="selection-count" id="circle-count">0 selected</span>
+                        </h4>
+                        <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">
+                            Select one or more telecom circles where you want to operate.
+                        </p>
+                        ${Object.entries(telecomCircles).map(([category, circles]) => `
+                            <div class="circle-group">
+                                <div class="circle-group-header">${category} Circles</div>
+                                <div class="checkbox-grid">
+                                    ${circles.map(circle => `
+                                        <label class="checkbox-item" onclick="toggleCircle('${circle}', this)">
+                                            <input type="checkbox" value="${circle}">
+                                            <i class="fa-solid fa-map-marker-alt"></i> ${circle}
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (circleBasedServices.ssaWise.includes(svc)) {
+                return `
+                    <div class="coverage-section">
+                        <h4><i class="fa-solid fa-city"></i> Select SSAs (Secondary Switching Areas)
+                            <span class="selection-count" id="ssa-count">0 / 4 selected</span>
+                        </h4>
+                        <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">
+                            ISP-C license allows operation in up to <strong>4 SSAs</strong> within a single telecom circle.
+                        </p>
+                        <div class="ssa-selector">
+                            <label>First, select a Telecom Circle:</label>
+                            <select id="ssa-circle-select" onchange="populateSSAs()">
+                                <option value="">-- Select Circle --</option>
+                                ${Object.values(telecomCircles).flat().sort().map(c => `<option value="${c}">${c}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div id="ssa-list" style="display:none;">
+                            <label>Select up to 4 SSAs:</label>
+                            <div class="checkbox-grid" id="ssa-checkboxes"></div>
+                        </div>
+                        <div class="upgrade-notice" id="upgrade-notice">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            <strong>Upgrade Required:</strong> You've selected more than 4 SSAs. ISP-C is limited to 4 SSAs.
+                            <br><br>
+                            Consider upgrading to <strong>ISP-B</strong> for circle-wide coverage or <strong>ISP-A</strong> for nationwide coverage.
+                            <br>
+                            <button class="upgrade-btn" onclick="upgradeLicense()">
+                                <i class="fa-solid fa-arrow-up"></i> Upgrade to ISP-B
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return '';
+        }
+
+        // Toggle circle selection
+        function toggleCircle(circle, element) {
+            const index = selectedCircles.indexOf(circle);
+            if (index > -1) {
+                selectedCircles.splice(index, 1);
+                element.classList.remove('selected');
+            } else {
+                selectedCircles.push(circle);
+                element.classList.add('selected');
+            }
+            document.getElementById('circle-count').textContent = `${selectedCircles.length} selected`;
+        }
+
+        // Populate SSAs for selected circle
+        function populateSSAs() {
+            const circle = document.getElementById('ssa-circle-select').value;
+            const ssaList = document.getElementById('ssa-list');
+            const ssaCheckboxes = document.getElementById('ssa-checkboxes');
+
+            if (!circle) {
+                ssaList.style.display = 'none';
+                return;
+            }
+
+            selectedSSAs = [];
+            updateSSACount();
+
+            const ssas = circleSSAs[circle] || [];
+            ssaCheckboxes.innerHTML = ssas.map(ssa => `
+                <label class="checkbox-item" onclick="toggleSSA('${ssa}', this, event)">
+                    <input type="checkbox" value="${ssa}">
+                    <i class="fa-solid fa-building"></i> ${ssa}
+                </label>
+            `).join('');
+
+            ssaList.style.display = 'block';
+            document.getElementById('upgrade-notice').classList.remove('visible');
+        }
+
+        // Toggle SSA selection
+        function toggleSSA(ssa, element, event) {
+            event.preventDefault();
+            const index = selectedSSAs.indexOf(ssa);
+
+            if (index > -1) {
+                selectedSSAs.splice(index, 1);
+                element.classList.remove('selected');
+            } else {
+                if (selectedSSAs.length >= 4) {
+                    // Show upgrade notice
+                    document.getElementById('upgrade-notice').classList.add('visible');
+                    return;
+                }
+                selectedSSAs.push(ssa);
+                element.classList.add('selected');
+            }
+
+            updateSSACount();
+
+            // Hide upgrade notice if under limit
+            if (selectedSSAs.length <= 4) {
+                document.getElementById('upgrade-notice').classList.remove('visible');
+            }
+        }
+
+        function updateSSACount() {
+            const countEl = document.getElementById('ssa-count');
+            if (countEl) {
+                countEl.textContent = `${selectedSSAs.length} / 4 selected`;
+                countEl.style.background = selectedSSAs.length >= 4 ? '#fee2e2' : '#dbeafe';
+                countEl.style.color = selectedSSAs.length >= 4 ? '#dc2626' : '#2563eb';
+            }
+        }
+
+        // Upgrade license from ISP-C to ISP-B
+        function upgradeLicense() {
+            const svcSelect = document.getElementById('service-type');
+            const currentSvc = svcSelect.value;
+
+            // Find ISP-B option
+            let targetSvc = currentSvc.includes('VNO') ? 'ISP-B (VNO)' : 'ISP-B';
+
+            // Check if ISP-B exists in options
+            for (let opt of svcSelect.options) {
+                if (opt.value === targetSvc) {
+                    svcSelect.value = targetSvc;
+                    showRequirements();
+                    return;
+                }
+            }
+
+            alert('ISP-B is not available. You may already own this license.');
         }
 
         // D. Toggle Form
@@ -394,7 +660,7 @@
         // E. Submit Logic
         async function submitApplication() {
             const btn = document.querySelector('.btn-primary');
-            
+
             // Collect all fields
             const cat = document.getElementById('license-category').value;
             const svc = document.getElementById('service-type').value;
@@ -405,9 +671,23 @@
             const paidup = document.getElementById('paid-up').value;
             const auth = document.getElementById('auth-sig').value;
 
-            if(!company || !cin || !auth || !networth) { 
-                alert("Please fill in all mandatory fields (Company Name, CIN, Net Worth, Auth Signatory)."); 
-                return; 
+            if(!company || !cin || !auth || !networth) {
+                alert("Please fill in all mandatory fields (Company Name, CIN, Net Worth, Auth Signatory).");
+                return;
+            }
+
+            // Validate coverage area selection
+            if (circleBasedServices.circleWise.includes(svc) && selectedCircles.length === 0) {
+                alert("Please select at least one Telecom Circle for your license.");
+                return;
+            }
+
+            if (circleBasedServices.ssaWise.includes(svc)) {
+                const ssaCircle = document.getElementById('ssa-circle-select')?.value;
+                if (!ssaCircle || selectedSSAs.length === 0) {
+                    alert("Please select a Telecom Circle and at least one SSA for your license.");
+                    return;
+                }
             }
 
             btn.disabled = true;
@@ -415,6 +695,15 @@
 
             try {
                 const { data: { user } } = await client.auth.getUser();
+
+                // Determine coverage area
+                let coverageArea = 'Nationwide';
+                if (circleBasedServices.circleWise.includes(svc)) {
+                    coverageArea = selectedCircles.join(', ');
+                } else if (circleBasedServices.ssaWise.includes(svc)) {
+                    const ssaCircle = document.getElementById('ssa-circle-select').value;
+                    coverageArea = `${ssaCircle}: ${selectedSSAs.join(', ')}`;
+                }
 
                 // Insert into Supabase
                 const { error } = await client.from('license_applications').insert({
@@ -427,17 +716,30 @@
                     net_worth: networth,
                     paid_up_capital: paidup,
                     auth_signatory: auth,
+                    coverage_area: coverageArea,
+                    selected_circles: selectedCircles.length > 0 ? selectedCircles : null,
+                    selected_ssas: selectedSSAs.length > 0 ? selectedSSAs : null,
                     status: 'Pending'
                 });
 
                 if(error) throw error;
 
                 // Success UI
+                let coverageText = '';
+                if (circleBasedServices.nationwide.includes(svc)) {
+                    coverageText = '<p><strong>Coverage:</strong> Pan-India (All 22 LSAs)</p>';
+                } else if (circleBasedServices.circleWise.includes(svc)) {
+                    coverageText = `<p><strong>Selected Circles:</strong> ${selectedCircles.join(', ')}</p>`;
+                } else if (circleBasedServices.ssaWise.includes(svc)) {
+                    coverageText = `<p><strong>Selected SSAs:</strong> ${selectedSSAs.join(', ')}</p>`;
+                }
+
                 document.querySelector('.container').innerHTML = `
                     <div style="text-align:center; padding:40px;">
                         <i class="fa-solid fa-circle-check" style="font-size:4rem; color:#10b981; margin-bottom:20px;"></i>
                         <h2>Application Request Sent!</h2>
                         <p style="color:#666;">We have received your request for <strong>${svc}</strong>.</p>
+                        ${coverageText}
                         <p style="margin-top:10px;">Our compliance team will review your eligibility (CIN: ${cin}) and Net Worth details.</p>
                         <p>We will email you at <strong>${document.getElementById('official-email').value}</strong> shortly.</p>
                         <br>
