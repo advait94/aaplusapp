@@ -157,7 +157,24 @@
         const supabaseKey = 'sb_publishable_PCJvu-s9XkCDGUvDZgsXhQ_myIhmu4t';
         const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 2. DOM ELEMENTS
+        // 2. CHECK FOR INVITE/RECOVERY LINK
+        // Listen for auth state changes (handles invite and password recovery links)
+        client.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth event:', event);
+            if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+                // Check if this is from an invite link (user needs to set password)
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                const type = hashParams.get('type');
+
+                if (type === 'invite' || type === 'recovery' || event === 'PASSWORD_RECOVERY') {
+                    // Redirect to profile page to set password
+                    window.location.href = 'profile.html';
+                    return;
+                }
+            }
+        });
+
+        // 3. DOM ELEMENTS
         const loginBtn = document.getElementById('login-btn');
         const errorBox = document.getElementById('error-box');
 
