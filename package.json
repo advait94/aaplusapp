@@ -1,0 +1,16 @@
+{
+  "name": "compliance-app",
+  "version": "1.0.0",
+  "description": "Telecommunications Compliance and Invoice Management App",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=3000 --open=index.html",
+    "dev": "live-server --port=3000 --open=index.html"
+  },
+  "keywords": ["compliance", "invoice", "dot"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

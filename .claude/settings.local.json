@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m http.server:*)",
+      "Bash(timeout:*)",
+      "Bash(git init:*)",
+      "Bash(vercel:*)",
+      "Bash(git add:*)",
+      "Bash(npx supabase init)",
+      "Bash(npx supabase functions new ask-dot-expert)",
+      "Bash(npx supabase:*)",
+      "Bash(set SUPABASE_ACCESS_TOKEN=sbp_3aab2f0d26664570d7afd65e943de4402e0b5dc3)",
+      "Bash(dir /B /S *.js *.html *.json)",
+      "Bash(findstr:*)",
+      "Bash(supabase:*)",
+      "Bash(npm install:*)",
+      "Bash(winget install:*)",
+      "Bash(scoop --version:*)",
+      "Bash(powershell:*)",
+      "Bash(choco install:*)",
+      "Bash(curl:*)",
+      "Bash(dir \"C:\\\\Users\\\\pc\\\\Desktop\\\\ComplianceApp\\\\supabase.exe\")",
+      "Bash(del \"C:\\\\Users\\\\pc\\\\Desktop\\\\ComplianceApp\\\\supabase.exe\")",
+      "Bash(dir \"C:\\\\Users\\\\pc\\\\Desktop\\\\ComplianceApp\\\\dot-ingest\\\\docs\")",
+      "Bash(node:*)",
+      "Bash(pushd:*)",
+      "Bash(popd)",
+      "Bash(dir /b)",
+      "Bash(npm --version:*)",
+      "Bash(npm start)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Telecommunications Compliance and Invoice Management Platform\n\n- Login portal with Supabase authentication\n- Client dashboard with compliance tracking, AI chatbot, expert consultation\n- Admin dashboard with invoice generation, client/employee management\n- Database schema with pgvector for AI knowledge base\n- n8n webhook integration for automated invoice emails\n- DOT knowledge base ingestion scripts\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(git config:*)"
+    ]
+  }
+}

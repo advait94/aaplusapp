@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for New License - AA Plus</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg-color: #f3f4f6;
+            --text-primary: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            display: flex;
+            height: 100vh;
+            color: var(--text-primary);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            padding: 24px;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+        .brand {
+            font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 32px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-item {
+            padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer;
+            color: #4b5563; transition: all 0.2s; display: flex; align-items: center; gap: 12px; text-decoration: none;
+        }
+        .nav-item:hover { background-color: #f3f4f6; color: var(--primary); }
+        .nav-item.active { background-color: #eff6ff; color: var(--primary); font-weight: 600; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1; padding: 40px; overflow-y: auto;
+        }
+
+        .container {
+            max-width: 900px; margin: 0 auto;
+        }
+
+        /* Steps & Cards */
+        .step-card {
+            background: white; padding: 30px; border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
+            margin-bottom: 24px; display: none; /* Hidden by default */
+        }
+        .step-card.active { display: block; animation: fadeIn 0.4s ease; }
+
+        h2 { margin-top: 0; color: #111827; font-size: 1.25rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        
+        /* Form Elements */
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; }
+        
+        select, input[type="text"], input[type="email"], textarea {
+            width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;
+            font-size: 1rem; margin-bottom: 20px; box-sizing: border-box;
+        }
+        
+        textarea { resize: vertical; height: 80px; }
+
+        /* Requirements Table */
+        .req-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.95rem; }
+        .req-table th, .req-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        .req-table th { background: #f9fafb; font-weight: 600; width: 40%; color: #555; }
+        
+        .doc-list { list-style: none; padding: 0; margin: 0; }
+        .doc-list li { 
+            padding: 10px 0; border-bottom: 1px dashed #eee; 
+            display: flex; align-items: flex-start; gap: 10px; font-size: 0.95rem; color: #4b5563;
+        }
+        .doc-list li::before { 
+            content: "\f15c"; font-family: "Font Awesome 6 Free"; font-weight: 400; 
+            color: var(--primary); margin-top: 3px;
+        }
+
+        /* Radio Confirmation Box */
+        .confirm-box {
+            background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; border-radius: 8px;
+            margin-top: 25px; display: flex; align-items: flex-start; gap: 15px;
+        }
+        .confirm-box input[type="radio"] { 
+            margin-top: 4px; width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary);
+        }
+        .confirm-label { font-weight: 600; color: #1e40af; font-size: 1rem; cursor: pointer; }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary); color: white; padding: 14px 28px; border: none;
+            border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem; width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-primary:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">AA Plus</div>
+        <a href="client_dashboard.html" class="nav-item"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-plus-circle"></i> Apply for License</a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1 style="margin-bottom:10px;">New License Application</h1>
+            <p style="color:#666; margin-bottom:30px;">Initiate a new license application process. Only Company Administrators can perform this action.</p>
+
+            <div class="step-card active" id="step1">
+                <h2>1. Select License Type</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label>License Category</label>
+                        <select id="license-category" onchange="populateServices()">
+                            <option value="">-- Select --</option>
+                            <option value="UL">Unified License (UL)</option>
+                            <option value="UL(VNO)">UL (VNO)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Service Authorization</label>
+                        <select id="service-type" disabled onchange="showRequirements()">
+                            <option value="">-- Select Category First --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card" id="step2">
+                <h2>2. Review Requirements & Fees</h2>
+                <div id="req-content">
+                    </div>
+                
+                <div class="confirm-box">
+                    <input type="radio" id="confirm-radio" name="confirmation" onchange="toggleStep3()">
+                    <label for="confirm-radio" class="confirm-label">
+                        I confirm that I have all the required documents and meet all the conditions required to obtain the License.
+                    </label>
+                </div>
+            </div>
+
+            <div class="step-card" id="step3">
+                <h2>3. Application Details</h2>
+                <p style="font-size:0.9rem; color:#666; margin-bottom:20px; background:#fff7ed; padding:10px; border-left:4px solid #f97316;">
+                    <i class="fa-solid fa-circle-info"></i> Please ensure details match exactly with your <strong>Certificate of Incorporation</strong> and <strong>MoA</strong>.
+                </p>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label>Registered Company Name</label>
+                        <input type="text" id="company-name" placeholder="As per Certificate of Incorporation">
+                    </div>
+                    <div>
+                        <label>Corporate Identity Number (CIN)</label>
+                        <input type="text" id="cin-number" placeholder="U12345MH2025PTC...">
+                    </div>
+                </div>
+
+                <div>
+                    <label>Registered Office Address</label>
+                    <textarea id="reg-address" placeholder="Full address as per MCA records..."></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label>Current Net Worth (in Cr/Lakhs)</label>
+                        <input type="text" id="net-worth" placeholder="e.g. ₹ 2.5 Crore">
+                    </div>
+                    <div>
+                        <label>Paid-up Capital</label>
+                        <input type="text" id="paid-up" placeholder="e.g. ₹ 10 Lakhs">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label>Authorized Signatory Name</label>
+                        <input type="text" id="auth-sig" placeholder="Director / Auth Person">
+                    </div>
+                    <div>
+                        <label>Official Email (for DoT OTPs)</label>
+                        <input type="email" id="official-email" placeholder="compliance@company.com">
+                    </div>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <button class="btn-primary" onclick="submitApplication()">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Application Request
+                    </button>
+                    <p style="text-align:center; margin-top:15px; font-size:0.85rem; color:#888;">
+                        By clicking Submit, you agree to our Terms of Service. A notification will be sent to the Admin team.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 1. SUPABASE CONFIG
+        const SUPABASE_URL = 'https://qitojxxbqsgypbavkkch.supabase.co'; 
+        const SUPABASE_KEY = 'sb_publishable_PCJvu-s9XkCDGUvDZgsXhQ_myIhmu4t';
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. KNOWLEDGE BASE (DoT 2024-25 Data)
+        // Provides instant fee info to the user
+        const licenseData = {
+            'UL': {
+                'ISP-A': { entry: '₹ 30 Lakhs', pbg: '₹ 10 Lakhs', fbg: '₹ 10,000', networth: '₹ 2.5 Crore' },
+                'ISP-B': { entry: '₹ 2 Lakhs', pbg: '₹ 1 Lakh', fbg: '₹ 10,000', networth: '₹ 10 Lakhs' },
+                'Access Service': { entry: '₹ 1 Crore (per LSA)', pbg: '₹ 50 Lakhs', fbg: '₹ 1 Crore', networth: '₹ 2.5 Crore' },
+                'NLD': { entry: '₹ 2.5 Crore', pbg: '₹ 50 Lakhs', fbg: '₹ 50 Lakhs', networth: '₹ 2.5 Crore' }
+            },
+            'UL(VNO)': {
+                'Access Service': { entry: '₹ 10 Lakhs (approx)', pbg: '₹ 10 Lakhs', fbg: '₹ 2 Lakhs', networth: '₹ 25 Lakhs' },
+                'ISP-A (VNO)': { entry: '₹ 1.5 Lakhs', pbg: '₹ 1 Lakh', fbg: '₹ 20,000', networth: '₹ 10 Lakhs' }
+            }
+        };
+
+        const commonDocs = [
+            "Certificate of Incorporation (COI)",
+            "Memorandum of Association (MOA) with 'Telecom/ISP' object clause",
+            "Articles of Association (AOA)",
+            "Board Resolution for Authorized Signatory",
+            "Power of Attorney (Notarized on ₹100 stamp paper)",
+            "Net Worth Certificate (CA Certified)",
+            "Paid-up Capital Certificate",
+            "Equity Details (Shareholding Pattern)"
+        ];
+
+        // 3. PAGE LOGIC
+        
+        // A. Security Check (Admin Only)
+        async function checkAccess() {
+            const { data: { user } } = await client.auth.getUser();
+            if(!user) window.location.href = 'index.html';
+
+            const { data: profile } = await client.from('profiles').select('*').eq('id', user.id).single();
+            if(profile.parent_id) {
+                document.querySelector('.container').innerHTML = `
+                    <div style="text-align:center; padding:50px;">
+                        <i class="fa-solid fa-lock" style="font-size:3rem; color:#ef4444;"></i>
+                        <h2>Access Denied</h2>
+                        <p>Only the Account Administrator can apply for new licenses.</p>
+                        <a href="client_dashboard.html" style="color:#2563eb; text-decoration:none;">Return to Dashboard</a>
+                    </div>
+                `;
+            }
+        }
+        checkAccess();
+
+        // B. Populate Services
+        function populateServices() {
+            const cat = document.getElementById('license-category').value;
+            const svcSelect = document.getElementById('service-type');
+            svcSelect.innerHTML = '<option value="">-- Select Service --</option>';
+            svcSelect.disabled = true;
+
+            if(cat && licenseData[cat]) {
+                svcSelect.disabled = false;
+                Object.keys(licenseData[cat]).forEach(svc => {
+                    svcSelect.innerHTML += `<option value="${svc}">${svc}</option>`;
+                });
+            }
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+        }
+
+        // C. Show Requirements & Confirm Radio
+        function showRequirements() {
+            const cat = document.getElementById('license-category').value;
+            const svc = document.getElementById('service-type').value;
+            if(!svc) return;
+
+            const data = licenseData[cat][svc];
+            
+            let html = `
+                <div style="background:#f0f9ff; padding:15px; border-left:4px solid var(--primary); margin-bottom:20px;">
+                    <strong><i class="fa-solid fa-scale-balanced"></i> Selected License:</strong> ${cat} - ${svc}
+                </div>
+                <table class="req-table">
+                    <tr><th>Entry Fee (Non-Refundable)</th><td>${data.entry}</td></tr>
+                    <tr><th>Performance Bank Guarantee (PBG)</th><td>${data.pbg}</td></tr>
+                    <tr><th>Financial Bank Guarantee (FBG)</th><td>${data.fbg}</td></tr>
+                    <tr><th>Min. Net Worth Required</th><td>${data.networth}</td></tr>
+                </table>
+
+                <h3>Required Documents Checklist</h3>
+                <ul class="doc-list">
+                    ${commonDocs.map(d => `<li>${d}</li>`).join('')}
+                    ${svc.includes('Access') ? '<li>Spectrum Request Letter (if applicable)</li>' : ''}
+                </ul>
+            `;
+
+            document.getElementById('req-content').innerHTML = html;
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('confirm-radio').checked = false; // Reset radio
+            document.getElementById('step3').style.display = 'none';
+        }
+
+        // D. Toggle Form
+        function toggleStep3() {
+            const isChecked = document.getElementById('confirm-radio').checked;
+            document.getElementById('step3').style.display = isChecked ? 'block' : 'none';
+            if(isChecked) {
+                // Scroll to form smoothly
+                document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // E. Submit Logic
+        async function submitApplication() {
+            const btn = document.querySelector('.btn-primary');
+            
+            // Collect all fields
+            const cat = document.getElementById('license-category').value;
+            const svc = document.getElementById('service-type').value;
+            const company = document.getElementById('company-name').value;
+            const cin = document.getElementById('cin-number').value;
+            const address = document.getElementById('reg-address').value;
+            const networth = document.getElementById('net-worth').value;
+            const paidup = document.getElementById('paid-up').value;
+            const auth = document.getElementById('auth-sig').value;
+
+            if(!company || !cin || !auth || !networth) { 
+                alert("Please fill in all mandatory fields (Company Name, CIN, Net Worth, Auth Signatory)."); 
+                return; 
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const { data: { user } } = await client.auth.getUser();
+
+                // Insert into Supabase
+                const { error } = await client.from('license_applications').insert({
+                    user_id: user.id,
+                    license_category: cat,
+                    service_type: svc,
+                    company_name: company,
+                    cin_number: cin,
+                    registered_address: address,
+                    net_worth: networth,
+                    paid_up_capital: paidup,
+                    auth_signatory: auth,
+                    status: 'Pending'
+                });
+
+                if(error) throw error;
+
+                // Success UI
+                document.querySelector('.container').innerHTML = `
+                    <div style="text-align:center; padding:40px;">
+                        <i class="fa-solid fa-circle-check" style="font-size:4rem; color:#10b981; margin-bottom:20px;"></i>
+                        <h2>Application Request Sent!</h2>
+                        <p style="color:#666;">We have received your request for <strong>${svc}</strong>.</p>
+                        <p style="margin-top:10px;">Our compliance team will review your eligibility (CIN: ${cin}) and Net Worth details.</p>
+                        <p>We will email you at <strong>${document.getElementById('official-email').value}</strong> shortly.</p>
+                        <br>
+                        <a href="client_dashboard.html" class="btn-primary" style="text-decoration:none; display:inline-block; width:auto;">Back to Dashboard</a>
+                    </div>
+                `;
+
+            } catch (err) {
+                console.error(err);
+                alert("Error submitting request: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "Submit Application Request";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+/* 1. General Page Setup */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e3f2fd; /* Light Blue Background */
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 2. The Login Card */
+.login-container {
+    background-color: white;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px; /* Slightly smoother corners */
+    /* A blue-tinted shadow for a cohesive look */
+    box-shadow: 0 8px 24px rgba(33, 150, 243, 0.15); 
+    text-align: center;
+    border-top: 5px solid #1976d2; /* A blue stripe at the top of the card */
+}
+
+/* 3. Logo Styling */
+.logo-section img {
+    max-width: 150px;
+    margin-bottom: 20px;
+}
+.logo-section {
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #0d47a1; /* Dark Deep Blue for the header */
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+/* 4. Input Fields */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #1565c0; /* Medium Blue for labels */
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bbdefb; /* Very light blue border */
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: #fafdff; /* Hint of blue in the input box */
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1976d2; /* Strong blue when active */
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1); /* Blue glow */
+}
+
+/* 5. Links and Buttons */
+.forgot-link {
+    text-align: right;
+    margin-bottom: 25px;
+}
+
+.forgot-link a {
+    color: #1976d2;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.forgot-link a:hover {
+    text-decoration: underline;
+    color: #0d47a1;
+}
+
+button {
+    width: 100%;
+    padding: 16px; /* Taller button */
+    /* Stronger, more vibrant blue gradient */
+    background: linear-gradient(135deg, #2196F3, #0D47A1); 
+    color: white;
+    border: none;
+    border-radius: 8px; /* Slightly more rounded */
+    font-size: 1.2rem; /* Larger text */
+    font-weight: 700;
+    text-transform: uppercase; /* Makes it look more professional */
+    letter-spacing: 1px; /* Spacing between letters for readability */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(13, 71, 161, 0.3); /* Permanent shadow for depth */
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    /* Lifts higher and glows more on hover */
+    transform: translateY(-3px); 
+    box-shadow: 0 10px 20px rgba(13, 71, 161, 0.4);
+    background: linear-gradient(135deg, #42A5F5, #1565C0);
+}
+
+button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(13, 71, 161, 0.4);
+}
