@@ -300,7 +300,8 @@
 
                 // If this was an invite flow, redirect to dashboard after a short delay
                 if (isInviteFlow) {
-                    const { data: { user } } = await client.auth.getUser();
+                    // Use the user from updateUser response, not a new getUser call
+                    const user = data.user;
                     setTimeout(() => {
                         if (user && adminEmails.includes(user.email)) {
                             window.location.href = 'admin_dashboard.html';
