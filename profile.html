@@ -193,16 +193,49 @@
         const backLink = document.getElementById('back-link');
 
         const adminEmails = ['advait@aaplusconsultants.com', 'radhakrishnan@aaplusconsultants.com', 'praveen@aaplusconsultants.com'];
+        let isInviteFlow = false;
+
+        // Check if this is an invite/recovery flow from URL hash
+        function checkForInviteHash() {
+            const hash = window.location.hash;
+            if (hash) {
+                const hashParams = new URLSearchParams(hash.substring(1));
+                const type = hashParams.get('type');
+                if (type === 'invite' || type === 'recovery' || type === 'magiclink') {
+                    isInviteFlow = true;
+                    // Update UI for new user
+                    document.querySelector('h2').textContent = 'Set Your Password';
+                    document.querySelector('.subtitle').textContent = 'Welcome! Please create a password for your account.';
+                    backLink.style.display = 'none';
+                }
+            }
+        }
 
         // Check if user is logged in
         async function checkAuth() {
-            const { data: { user } } = await client.auth.getUser();
+            // First check for invite hash
+            checkForInviteHash();
 
-            if (!user) {
-                window.location.href = 'index.html';
+            // Wait for Supabase to process the hash tokens
+            const { data: { session }, error } = await client.auth.getSession();
+
+            if (error) {
+                console.error('Session error:', error);
+                showError('Failed to verify your session. Please try the link again.');
                 return;
             }
 
+            if (!session) {
+                // If no session and not invite flow, redirect to login
+                if (!isInviteFlow) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                // If invite flow but no session yet, wait for auth state change
+                return;
+            }
+
+            const user = session.user;
             userEmailDiv.textContent = user.email;
 
             // Set back link based on user role
@@ -212,6 +245,19 @@
                 backLink.href = 'client_dashboard.html';
             }
         }
+
+        // Listen for auth state changes (for invite flow)
+        client.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth event:', event);
+            if (session && session.user) {
+                userEmailDiv.textContent = session.user.email;
+                if (adminEmails.includes(session.user.email)) {
+                    backLink.href = 'admin_dashboard.html';
+                } else {
+                    backLink.href = 'client_dashboard.html';
+                }
+            }
+        });
 
         async function handleUpdatePassword() {
             errorBox.style.display = 'none';
@@ -251,6 +297,18 @@
                 showSuccess("Password updated successfully!");
                 document.getElementById('new-password').value = '';
                 document.getElementById('confirm-password').value = '';
+
+                // If this was an invite flow, redirect to dashboard after a short delay
+                if (isInviteFlow) {
+                    const { data: { user } } = await client.auth.getUser();
+                    setTimeout(() => {
+                        if (user && adminEmails.includes(user.email)) {
+                            window.location.href = 'admin_dashboard.html';
+                        } else {
+                            window.location.href = 'client_dashboard.html';
+                        }
+                    }, 1500);
+                }
 
             } catch (err) {
                 console.error("Update Error:", err);
