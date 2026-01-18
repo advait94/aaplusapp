@@ -534,10 +534,9 @@
                                 <div class="circle-group-header">${category} Circles</div>
                                 <div class="checkbox-grid">
                                     ${circles.map(circle => `
-                                        <label class="checkbox-item" onclick="toggleCircle('${circle}', this)">
-                                            <input type="checkbox" value="${circle}">
+                                        <div class="checkbox-item" onclick="toggleCircle('${circle}', this, event)">
                                             <i class="fa-solid fa-map-marker-alt"></i> ${circle}
-                                        </label>
+                                        </div>
                                     `).join('')}
                                 </div>
                             </div>
@@ -598,7 +597,9 @@
         }
 
         // Toggle circle selection
-        function toggleCircle(circle, element) {
+        function toggleCircle(circle, element, event) {
+            if (event) event.stopPropagation();
+
             const index = selectedCircles.indexOf(circle);
             if (index > -1) {
                 selectedCircles.splice(index, 1);
