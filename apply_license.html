@@ -475,14 +475,18 @@
             const data = licenseData[cat][svc];
 
             // Parse and store base fees for calculation
+            // Also parse reduced entry fee for J&K/NE if available
+            const hasReducedRate = data.entry && data.entry.includes('(');
             currentBaseFees = {
                 entry: parseFeeValue(data.entry),
+                entryReduced: hasReducedRate ? parseFeeValue(data.entry, true) : parseFeeValue(data.entry),
                 pbg: parseFeeValue(data.pbg),
                 fbg: parseFeeValue(data.fbg),
                 networth: data.networth,
                 entryText: data.entry,
                 pbgText: data.pbg,
-                fbgText: data.fbg
+                fbgText: data.fbg,
+                hasReducedRate: hasReducedRate
             };
 
             // Check if this service requires per-unit calculation
@@ -641,15 +645,28 @@
             return '';
         }
 
+        // Circles with reduced entry fees (J&K and North East)
+        const discountedCircles = ['Jammu & Kashmir', 'North East'];
+
         // Parse fee value from string (e.g., "₹ 2 Lakhs" -> 200000)
-        function parseFeeValue(feeStr) {
+        function parseFeeValue(feeStr, useReducedRate = false) {
             if (!feeStr || feeStr === 'Nil' || feeStr === 'N/A') return 0;
 
-            // Extract the first number and unit
             const str = feeStr.toString().toLowerCase();
 
-            // Handle special cases with parentheses (take first value)
-            let cleanStr = str.split('(')[0].trim();
+            let cleanStr;
+            if (useReducedRate && str.includes('(')) {
+                // Extract the value inside parentheses for J&K/NE
+                const match = str.match(/\(([^)]+)\)/);
+                if (match) {
+                    cleanStr = match[1];
+                } else {
+                    cleanStr = str.split('(')[0].trim();
+                }
+            } else {
+                // Take first value (before parentheses)
+                cleanStr = str.split('(')[0].trim();
+            }
 
             // Extract number
             const numMatch = cleanStr.match(/[\d,.]+/);
@@ -701,14 +718,38 @@
 
             calcDiv.style.display = 'block';
 
-            const entryTotal = currentBaseFees.entry * count;
+            // Count discounted circles (J&K, North East) - only for circle-wise selection
+            let regularCount = count;
+            let discountedCount = 0;
+
+            if (isCircleWise && currentBaseFees.hasReducedRate) {
+                discountedCount = selectedCircles.filter(c => discountedCircles.includes(c)).length;
+                regularCount = count - discountedCount;
+            }
+
+            // Calculate entry fee with different rates for J&K/NE
+            const entryRegular = currentBaseFees.entry * regularCount;
+            const entryDiscounted = currentBaseFees.entryReduced * discountedCount;
+            const entryTotal = entryRegular + entryDiscounted;
+
             const pbgTotal = currentBaseFees.pbg * count;
             const fbgTotal = currentBaseFees.fbg * count;
             const grandTotal = entryTotal + pbgTotal + fbgTotal;
 
-            // Update display
-            document.getElementById('calc-entry').innerHTML =
-                `${currentBaseFees.entryText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(entryTotal)}</strong>`;
+            // Update display - show breakdown if there are discounted circles
+            let entryDisplay;
+            if (discountedCount > 0 && regularCount > 0) {
+                // Mixed selection - show breakdown
+                entryDisplay = `${formatIndianCurrency(currentBaseFees.entry)} × ${regularCount} + ${formatIndianCurrency(currentBaseFees.entryReduced)} × ${discountedCount} (J&K/NE) = <strong>${formatIndianCurrency(entryTotal)}</strong>`;
+            } else if (discountedCount > 0) {
+                // Only discounted circles
+                entryDisplay = `${formatIndianCurrency(currentBaseFees.entryReduced)} × ${discountedCount} ${unit}${discountedCount > 1 ? 's' : ''} (J&K/NE rate) = <strong>${formatIndianCurrency(entryTotal)}</strong>`;
+            } else {
+                // Only regular circles
+                entryDisplay = `${currentBaseFees.entryText.split('(')[0].trim()} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(entryTotal)}</strong>`;
+            }
+
+            document.getElementById('calc-entry').innerHTML = entryDisplay;
             document.getElementById('calc-pbg').innerHTML =
                 currentBaseFees.pbg === 0 ? 'Nil' :
                 `${currentBaseFees.pbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(pbgTotal)}</strong>`;
