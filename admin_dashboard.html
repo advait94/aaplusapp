@@ -1069,13 +1069,40 @@
 
         let projectPayments = [];
 
+        // Restricted users who can only see their assigned consultations (defined early for init check)
+        const CONSULTATION_ONLY_USERS = ['rishabh@aaplusconsultants.com'];
+
         async function init() {
             const { data: { session } } = await client.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             document.getElementById('user-info').innerText = session.user.email;
             currentAdminEmail = session.user.email;
 
-            // Try fetching from Supabase, fallback to hardcoded if table doesn't exist
+            // Check if this is a restricted user (consultation-only access)
+            const isRestrictedUser = CONSULTATION_ONLY_USERS.includes(session.user.email);
+
+            if (isRestrictedUser) {
+                // Hide all navigation items except Consultations
+                document.getElementById('nav-dashboard').style.display = 'none';
+                document.getElementById('nav-employees').style.display = 'none';
+                document.getElementById('nav-expenses').style.display = 'none';
+                document.getElementById('nav-bills').style.display = 'none';
+
+                // Update brand text for restricted user
+                document.querySelector('.brand').innerHTML = '<img src="AAPlus Logo.png" alt="AA Plus Logo" style="height:30px;"> Consultations';
+
+                // Hide the dashboard view and show consultations directly
+                document.getElementById('dashboard-view').style.display = 'none';
+                document.getElementById('consultations-view').style.display = 'block';
+                document.getElementById('nav-consultations').classList.add('active');
+
+                // Fetch consultations for this restricted user
+                document.getElementById('loading-screen').style.display = 'none';
+                await fetchConsultations();
+                return;
+            }
+
+            // Normal admin flow - fetch all data
             await fetchClients();
 
             renderPayments();
@@ -2794,7 +2821,7 @@
         // Expert ID to admin email mapping
         const EXPERT_EMAIL_MAP = {
             'praveen': 'praveen@aaplusconsultants.com',
-            'rishabh': 'advait@aaplusconsultants.com'  // Update if different
+            'rishabh': 'rishabh@aaplusconsultants.com'
         };
 
         // Expert ID to display name mapping
@@ -3035,6 +3062,11 @@
         }
 
         function switchView(viewName) {
+            // Prevent restricted users from accessing views other than consultations
+            if (CONSULTATION_ONLY_USERS.includes(currentAdminEmail) && viewName !== 'consultations') {
+                return;
+            }
+
             const dashboard = document.getElementById('dashboard-view');
             const employees = document.getElementById('employees-view');
             const expenses = document.getElementById('expenses-view');
@@ -3095,10 +3127,13 @@
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("App Starting...");
             await init();
-            // Initial fetches for calculation
-            await fetchEmployees();
-            await fetchExpenses();
-            await fetchProjects();
+            // Skip additional fetches for restricted users (they only see consultations)
+            if (!CONSULTATION_ONLY_USERS.includes(currentAdminEmail)) {
+                // Initial fetches for calculation
+                await fetchEmployees();
+                await fetchExpenses();
+                await fetchProjects();
+            }
         });
     </script>
 </body>
