@@ -483,6 +483,10 @@
 
         <div style="margin-top:auto; padding-top:20px; border-top:1px solid #eee;">
             <div id="user-info" style="font-size:0.85rem; color:#666; margin-bottom:10px;">Admin</div>
+            <button onclick="openChangePasswordModal()"
+                style="width:100%; padding:8px; border:1px solid #ddd; background:white; cursor:pointer; border-radius:6px; color:#4b5563; margin-bottom:8px;">
+                <i class="fa-solid fa-key"></i> Change Password
+            </button>
             <button onclick="logout()"
                 style="width:100%; padding:8px; border:1px solid #ddd; background:white; cursor:pointer; border-radius:6px; color:#d32f2f;">
                 <i class="fa-solid fa-sign-out-alt"></i> Logout
@@ -1188,6 +1192,31 @@
                     <i class="fa-solid fa-upload"></i> Import All Expenses
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="change-password-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 400px; height: auto; padding: 30px; border-radius: 12px;">
+            <span class="close-modal" onclick="closeChangePasswordModal()">&times;</span>
+            <h2 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-key"></i> Change Password</h2>
+            <div class="input-group" style="margin-bottom:15px;">
+                <label>New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password" minlength="6"
+                    style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+            </div>
+            <div class="input-group" style="margin-bottom:20px;">
+                <label>Confirm Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password"
+                    style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+            </div>
+            <button class="btn-action" style="background:var(--primary); color:white; width:100%; padding:12px;"
+                onclick="changePassword()">
+                <i class="fa-solid fa-check"></i> Update Password
+            </button>
+            <p style="color:#6b7280; font-size:0.8rem; margin-top:12px; margin-bottom:0;">
+                Password must be at least 6 characters long.
+            </p>
         </div>
     </div>
 
@@ -2208,6 +2237,46 @@
         async function logout() {
             await client.auth.signOut();
             window.location.href = 'index.html';
+        }
+
+        // --- CHANGE PASSWORD LOGIC ---
+        function openChangePasswordModal() {
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('change-password-modal').style.display = 'flex';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'none';
+        }
+
+        async function changePassword() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (!newPassword || newPassword.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            try {
+                const { error } = await client.auth.updateUser({
+                    password: newPassword
+                });
+
+                if (error) throw error;
+
+                alert('Password updated successfully!');
+                closeChangePasswordModal();
+            } catch (err) {
+                console.error('Error changing password:', err);
+                alert('Failed to change password: ' + err.message);
+            }
         }
 
         // --- ADD NEW CLIENT LOGIC ---
