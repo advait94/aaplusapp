@@ -588,11 +588,20 @@
             .sidebar.open { left: 0; }
             .sidebar-overlay.open { display: block; }
 
-            body { display: block; }
+            body {
+                display: block;
+                height: auto;
+                min-height: 100vh;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
 
             .main-content {
-                padding: 70px 16px 16px 16px;
+                padding: 70px 16px 100px 16px;
                 min-height: 100vh;
+                width: 100%;
+                overflow-x: hidden;
+                box-sizing: border-box;
             }
 
             /* Stats Cards */
@@ -700,6 +709,23 @@
 
             .nav-section {
                 font-size: 0.7rem;
+            }
+
+            /* Chat widget responsive */
+            #chat-trigger {
+                width: 50px !important;
+                height: 50px !important;
+                bottom: 20px !important;
+                right: 15px !important;
+            }
+
+            #chat-window {
+                width: calc(100vw - 20px) !important;
+                height: calc(100vh - 140px) !important;
+                bottom: 80px !important;
+                right: 10px !important;
+                left: 10px !important;
+                max-width: 100% !important;
             }
         }
     </style>
