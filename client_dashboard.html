@@ -528,10 +528,189 @@
         .success-message p {
             color: #6b7280;
         }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Responsive Styles - Tablet */
+        @media (max-width: 1024px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .compliance-card {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .compliance-card .custom-checkbox {
+                grid-column: span 2;
+                justify-self: end;
+            }
+        }
+
+        /* Responsive Styles - Mobile */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle { display: block; }
+
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                width: var(--sidebar-width);
+            }
+
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.open { display: block; }
+
+            body { display: block; }
+
+            .main-content {
+                padding: 70px 16px 16px 16px;
+                min-height: 100vh;
+            }
+
+            /* Stats Cards */
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            /* Compliance Cards */
+            .compliance-card {
+                grid-template-columns: 1fr;
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .compliance-card .custom-checkbox {
+                grid-column: 1;
+            }
+
+            /* Tabs */
+            .tabs {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            /* Filter Pills */
+            .filter-pills {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 8px;
+            }
+
+            .pill {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* Modal */
+            .modal-content {
+                width: 95%;
+                max-width: 500px;
+                max-height: 85vh;
+            }
+
+            .modal-body {
+                padding: 16px;
+            }
+
+            .expert-selection {
+                flex-direction: column;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                font-size: 16px; /* Prevents iOS zoom */
+            }
+
+            /* Headings */
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 60px 12px 12px 12px;
+            }
+
+            .compliance-card {
+                padding: 12px;
+            }
+
+            .scope-tag {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .nav-section {
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div id="loading-screen">
         <h2>Loading Dashboard...</h2>
@@ -648,6 +827,12 @@
         const SUPABASE_URL = 'https://qitojxxbqsgypbavkkch.supabase.co'; // <--- PUT YOUR URL HERE
         const SUPABASE_KEY = 'sb_publishable_PCJvu-s9XkCDGUvDZgsXhQ_myIhmu4t';     // <--- PUT YOUR KEY HERE
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.querySelector('.sidebar-overlay').classList.toggle('open');
+        }
 
         // --- 2. STATE VARIABLES ---
         let currentLicense = null;

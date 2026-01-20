@@ -480,6 +480,178 @@
             color: #3b82f6;
         }
 
+        /* Responsive Styles - Tablet */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 40px 40px;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }
+
+            .title-slide h1 {
+                font-size: 3rem;
+            }
+
+            .feature-grid,
+            .problem-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .workflow-container {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .workflow-arrow {
+                display: none;
+            }
+        }
+
+        /* Responsive Styles - Mobile */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+                min-height: auto;
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+
+            h2 {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+
+            h3 {
+                font-size: 1.4rem;
+            }
+
+            .title-slide h1 {
+                font-size: 2.2rem;
+            }
+
+            .title-slide .tagline {
+                font-size: 1.1rem;
+            }
+
+            .title-slide .logo {
+                width: 80px;
+                height: 80px;
+                border-radius: 16px;
+                margin-bottom: 25px;
+            }
+
+            .title-slide .logo img {
+                width: 50px;
+            }
+
+            .title-slide .presenter {
+                padding: 15px 25px;
+                margin-top: 40px;
+            }
+
+            /* Problem/Feature Grids */
+            .feature-grid,
+            .problem-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .feature-card,
+            .problem-card {
+                padding: 20px;
+            }
+
+            .feature-card i,
+            .problem-card i {
+                font-size: 1.5rem;
+            }
+
+            /* Workflow */
+            .workflow-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .workflow-step {
+                padding: 20px;
+                flex: none;
+                width: 100%;
+            }
+
+            /* Stats */
+            .stats-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stat-item {
+                padding: 20px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            /* Benefits */
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .benefit-card {
+                padding: 20px;
+            }
+
+            /* CTA */
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .cta-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* Navigation hint */
+            .nav-hint {
+                font-size: 0.8rem;
+                bottom: 15px;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .slide {
+                padding: 25px 15px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .title-slide h1 {
+                font-size: 1.8rem;
+            }
+
+            .title-slide .tagline {
+                font-size: 1rem;
+            }
+
+            .feature-card h4,
+            .problem-card h4 {
+                font-size: 1rem;
+            }
+
+            .feature-card p,
+            .problem-card p {
+                font-size: 0.9rem;
+            }
+        }
+
         @media print {
             .slide {
                 page-break-after: always;

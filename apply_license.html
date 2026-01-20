@@ -144,9 +144,95 @@
         .nationwide-badge i { font-size: 1.2rem; }
         .ssa-selector { margin-top: 15px; }
         .ssa-selector select { margin-bottom: 10px; }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle { display: block; }
+
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                width: 260px;
+            }
+
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.open { display: block; }
+
+            body { display: block; }
+
+            .main-content {
+                padding: 70px 20px 20px 20px;
+                min-height: 100vh;
+            }
+
+            .container { max-width: 100%; }
+
+            /* Stack grids on mobile */
+            .step-card div[style*="grid-template-columns: 1fr 1fr"] {
+                display: block !important;
+            }
+
+            .step-card div[style*="grid-template-columns: 1fr 1fr"] > div {
+                margin-bottom: 15px;
+            }
+
+            .req-table { font-size: 0.85rem; }
+            .req-table th, .req-table td { padding: 10px 8px; }
+            .req-table th { width: 35%; }
+
+            .checkbox-grid { gap: 6px; }
+            .checkbox-item { padding: 6px 10px; font-size: 0.85rem; }
+
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.1rem; }
+
+            select, input[type="text"], input[type="email"], textarea {
+                font-size: 16px; /* Prevents iOS zoom */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content { padding: 60px 15px 15px 15px; }
+            .step-card { padding: 20px; }
+            .confirm-box { flex-direction: column; padding: 15px; }
+            .btn-primary { padding: 12px 20px; }
+        }
     </style>
 </head>
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div class="sidebar">
         <div class="brand">AA Plus</div>
@@ -251,9 +337,15 @@
 
     <script>
         // 1. SUPABASE CONFIG
-        const SUPABASE_URL = 'https://qitojxxbqsgypbavkkch.supabase.co'; 
+        const SUPABASE_URL = 'https://qitojxxbqsgypbavkkch.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_PCJvu-s9XkCDGUvDZgsXhQ_myIhmu4t';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.querySelector('.sidebar-overlay').classList.toggle('open');
+        }
 
         // 2. KNOWLEDGE BASE (DoT 2024-25 Data)
         // Provides instant fee info to the user

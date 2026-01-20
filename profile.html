@@ -147,6 +147,41 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px;
+            }
+
+            .profile-card {
+                padding: 30px 24px;
+                border-radius: 10px;
+            }
+
+            .logo-container img {
+                max-height: 40px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            p.subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 25px;
+            }
+
+            input {
+                padding: 12px;
+                font-size: 16px; /* Prevents iOS zoom on focus */
+            }
+
+            button {
+                padding: 14px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 
