@@ -3439,6 +3439,9 @@
         // --- CONTRACTOR BILLS FUNCTIONS ---
         let allContractorBills = [];
 
+        // Rishabh's signature image (base64 PNG)
+        const RISHABH_SIGNATURE = 'sign Final.png';
+
         function initContractorBillYearDropdown() {
             const currentYear = new Date().getFullYear();
             const currentMonth = new Date().getMonth() + 1;
@@ -3943,10 +3946,30 @@
                 y += 7;
             });
 
-            // Signature box
+            // Signature box with image
             doc.rect(100, y - 35, 90, 35);
             doc.setFont('helvetica', 'bold');
             doc.text('SIGNATURE', 145, y - 5, { align: 'center' });
+
+            // Add signature image (load and add)
+            const signatureY = y - 32;
+            await new Promise((resolve) => {
+                const signImg = new Image();
+                signImg.crossOrigin = 'anonymous';
+                signImg.onload = function() {
+                    try {
+                        doc.addImage(signImg, 'PNG', 115, signatureY, 50, 20);
+                    } catch (e) {
+                        console.warn('Could not add signature image:', e);
+                    }
+                    resolve();
+                };
+                signImg.onerror = function() {
+                    console.warn('Failed to load signature image');
+                    resolve();
+                };
+                signImg.src = RISHABH_SIGNATURE;
+            });
 
             // Terms
             y += 5;
