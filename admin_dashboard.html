@@ -866,10 +866,58 @@
                 </div>
             </div>
 
-            <!-- Upload Form (shown only for Rishabh) -->
+            <!-- Generate & Upload Section (shown only for Rishabh) -->
             <div id="contractor-upload-section" style="display:none; margin-bottom:30px;">
+                <!-- Generate Bill Form -->
+                <div class="table-container" style="padding:24px; margin-bottom:20px;">
+                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-file-invoice"></i> Generate Monthly Bill</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:15px; align-items:end;">
+                        <div class="input-group">
+                            <label>Month</label>
+                            <select id="generate-bill-month" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Year</label>
+                            <select id="generate-bill-year" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                                <!-- Options populated by JS -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Invoice Number</label>
+                            <input type="number" id="generate-bill-invoice-no" placeholder="e.g. 10" min="1"
+                                style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                        </div>
+                        <div class="input-group">
+                            <label>Base Amount (₹)</label>
+                            <input type="number" id="generate-bill-amount" placeholder="e.g. 325000"
+                                style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                        </div>
+                        <button class="btn-action" onclick="generateContractorBill()"
+                            style="background:#10b981; color:white; border:none; padding:12px 24px; height:fit-content;">
+                            <i class="fa-solid fa-file-pdf"></i> Generate PDF
+                        </button>
+                    </div>
+                    <p style="color:#6b7280; font-size:0.85rem; margin-top:12px; margin-bottom:0;">
+                        <i class="fa-solid fa-info-circle"></i> 18% IGST will be added automatically. Invoice will be generated and saved.
+                    </p>
+                </div>
+
+                <!-- Or Upload Existing Bill -->
                 <div class="table-container" style="padding:24px;">
-                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-upload"></i> Upload Monthly Bill</h3>
+                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-upload"></i> Or Upload Existing Bill</h3>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 2fr auto; gap:15px; align-items:end;">
                         <div class="input-group">
                             <label>Month</label>
@@ -3323,18 +3371,28 @@
         let allContractorBills = [];
 
         function initContractorBillYearDropdown() {
-            const yearSelect = document.getElementById('contractor-bill-year');
             const currentYear = new Date().getFullYear();
-            yearSelect.innerHTML = '';
-            for (let y = currentYear; y >= currentYear - 2; y--) {
-                const opt = document.createElement('option');
-                opt.value = y;
-                opt.textContent = y;
-                yearSelect.appendChild(opt);
-            }
-            // Set current month
-            const monthSelect = document.getElementById('contractor-bill-month');
-            monthSelect.value = new Date().getMonth() + 1;
+            const currentMonth = new Date().getMonth() + 1;
+
+            // Populate year dropdowns (both upload and generate)
+            ['contractor-bill-year', 'generate-bill-year'].forEach(id => {
+                const yearSelect = document.getElementById(id);
+                if (yearSelect) {
+                    yearSelect.innerHTML = '';
+                    for (let y = currentYear; y >= currentYear - 2; y--) {
+                        const opt = document.createElement('option');
+                        opt.value = y;
+                        opt.textContent = y;
+                        yearSelect.appendChild(opt);
+                    }
+                }
+            });
+
+            // Set current month for both dropdowns
+            ['contractor-bill-month', 'generate-bill-month'].forEach(id => {
+                const monthSelect = document.getElementById(id);
+                if (monthSelect) monthSelect.value = currentMonth;
+            });
         }
 
         async function fetchContractorBills() {
@@ -3523,6 +3581,366 @@
             } catch (err) {
                 console.error('Error deleting contractor bill:', err);
                 alert('Failed to delete bill. Please try again.');
+            }
+        }
+
+        // Number to words conversion for Indian currency
+        function numberToWordsIndian(num) {
+            const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+                         'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+                         'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+            if (num === 0) return 'Zero';
+
+            function convertLessThanThousand(n) {
+                if (n === 0) return '';
+                if (n < 20) return ones[n];
+                if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? '-' + ones[n % 10] : '');
+                return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convertLessThanThousand(n % 100) : '');
+            }
+
+            let result = '';
+            const crore = Math.floor(num / 10000000);
+            const lakh = Math.floor((num % 10000000) / 100000);
+            const thousand = Math.floor((num % 100000) / 1000);
+            const remainder = num % 1000;
+
+            if (crore) result += convertLessThanThousand(crore) + ' Crore ';
+            if (lakh) result += convertLessThanThousand(lakh) + ' Lakh ';
+            if (thousand) result += convertLessThanThousand(thousand) + ' Thousand ';
+            if (remainder) result += convertLessThanThousand(remainder);
+
+            return result.trim() + ' Only';
+        }
+
+        // Get financial year string (e.g., "2025-26")
+        function getFinancialYear(month, year) {
+            // Financial year in India: April to March
+            // If month is Jan-Mar, FY started previous year
+            if (month >= 1 && month <= 3) {
+                return `${year - 1}-${String(year).slice(-2)}`;
+            }
+            return `${year}-${String(year + 1).slice(-2)}`;
+        }
+
+        async function generateContractorBill() {
+            const month = parseInt(document.getElementById('generate-bill-month').value);
+            const year = parseInt(document.getElementById('generate-bill-year').value);
+            const invoiceNo = parseInt(document.getElementById('generate-bill-invoice-no').value);
+            const baseAmount = parseFloat(document.getElementById('generate-bill-amount').value);
+
+            if (!invoiceNo || invoiceNo < 1) {
+                alert('Please enter a valid invoice number.');
+                return;
+            }
+            if (!baseAmount || baseAmount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthName = monthNames[month - 1];
+            const financialYear = getFinancialYear(month, year);
+            const invoiceNoStr = String(invoiceNo).padStart(3, '0');
+            const igstAmount = baseAmount * 0.18;
+            const totalAmount = baseAmount + igstAmount;
+
+            // Invoice date: 2nd of next month
+            let invoiceDate;
+            if (month === 12) {
+                invoiceDate = new Date(year + 1, 0, 2); // Jan 2 of next year
+            } else {
+                invoiceDate = new Date(year, month, 2); // 2nd of next month
+            }
+            const invoiceDateStr = invoiceDate.toLocaleDateString('en-IN', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            }).split('/').join('-');
+
+            // Contractor details (Rishabh)
+            const contractor = {
+                name: 'RISHABH NATH ADITYA',
+                address: 'B1/302, Dheeraj Gaurav Heights-1 CHS Ltd,\n90 Feet Road, Near Infiniti Mall,\nAndheri West, Mumbai – 400 053',
+                phone: '+91 961 93 50 143',
+                email: 'rnaditya@gmail.com',
+                gstin: '27AACPA4865F1ZY',
+                state: 'Maharashtra',
+                stateCode: '27',
+                bankName: 'Kotak Mahindra Bank Ltd., Andheri (West)',
+                bankAccount: '8811893163',
+                ifsc: 'KKBK0000962',
+                micr: '400485017'
+            };
+
+            // Recipient details (AA Plus)
+            const recipient = {
+                name: 'AA PLUS CONSULTANTS',
+                address: 'C-6/442, Yamuna Vihar, Shahdara\nNew Delhi - 110053',
+                gstin: '07AFZPS5689F1ZD',
+                state: 'Delhi',
+                stateCode: '7',
+                placeOfSupply: 'New Delhi'
+            };
+
+            // Generate PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+
+            // Colors
+            const headerBg = [41, 128, 185];
+            const borderColor = [0, 0, 0];
+
+            // Header section
+            doc.setFillColor(...headerBg);
+            doc.rect(10, 10, pageWidth - 20, 35, 'F');
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text(contractor.name, pageWidth / 2, 20, { align: 'center' });
+
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('B1/302, Dheeraj Gaurav Heights-1 CHS Ltd', pageWidth / 2, 27, { align: 'center' });
+            doc.text('90 Feet Road, Near Infiniti Mall, Andheri West, Mumbai – 400 053', pageWidth / 2, 32, { align: 'center' });
+            doc.text(`M: ${contractor.phone}, Email: ${contractor.email}`, pageWidth / 2, 37, { align: 'center' });
+
+            // TAX INVOICE title
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('TAX INVOICE', pageWidth / 2, 55, { align: 'center' });
+
+            // Invoice details box
+            let y = 62;
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+
+            // Invoice No and Date
+            doc.setDrawColor(...borderColor);
+            doc.rect(10, y, pageWidth - 20, 16);
+            doc.line(pageWidth / 2, y, pageWidth / 2, y + 16);
+            doc.line(10, y + 8, pageWidth - 10, y + 8);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('Invoice No.:', 15, y + 5);
+            doc.text('Invoice Date:', 15, y + 13);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Inv/${invoiceNoStr}/${financialYear}`, pageWidth / 2 + 5, y + 5);
+            doc.text(invoiceDateStr, pageWidth / 2 + 5, y + 13);
+
+            // Provider and Receiver details
+            y += 20;
+            const colWidth = (pageWidth - 20) / 2;
+
+            // Headers
+            doc.setFillColor(240, 240, 240);
+            doc.rect(10, y, colWidth, 8, 'F');
+            doc.rect(10 + colWidth, y, colWidth, 8, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.text('Details of Service Provider', 10 + colWidth / 2, y + 5.5, { align: 'center' });
+            doc.text('Details of Service Receiver', 10 + colWidth + colWidth / 2, y + 5.5, { align: 'center' });
+
+            // Details rows
+            y += 8;
+            const rows = [
+                ['GSTIN:', contractor.gstin, 'GSTIN:', recipient.gstin],
+                ['Name of service provider:', contractor.name, 'Name of service recipient:', recipient.name],
+                ['Address of service provider:', 'B1/302, Dheeraj Gaurav Heights-1 CHS Ltd, 90 Feet Road, Near Infiniti Mall, Andheri West, Mumbai – 400 053', 'Address of service recipient:', 'C-6/442, Yamuna Vihar, Shahdara New Delhi - 110053'],
+                ['State:', contractor.state, 'State:', recipient.state],
+                ['State Code:', contractor.stateCode, 'State Code:', recipient.stateCode],
+                ['Nature of Goods/Service:', 'Professional Services', 'Place of Supply:', recipient.placeOfSupply]
+            ];
+
+            const rowHeights = [8, 8, 16, 8, 8, 8];
+            rows.forEach((row, i) => {
+                const rh = rowHeights[i];
+                doc.rect(10, y, colWidth, rh);
+                doc.rect(10 + colWidth, y, colWidth, rh);
+
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                doc.text(row[0], 12, y + (rh > 8 ? 5 : 5.5));
+                doc.text(row[2], 10 + colWidth + 2, y + (rh > 8 ? 5 : 5.5));
+
+                doc.setFont('helvetica', 'normal');
+                if (rh > 8) {
+                    doc.text(row[1], 12, y + 10, { maxWidth: colWidth - 50 });
+                    doc.text(row[3], 10 + colWidth + 2, y + 10, { maxWidth: colWidth - 50 });
+                } else {
+                    doc.text(row[1], 55, y + 5.5);
+                    doc.text(row[3], 10 + colWidth + 45, y + 5.5);
+                }
+                y += rh;
+            });
+
+            // HSN/SAC Code row
+            doc.rect(10, y, pageWidth - 20, 8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('HSN/ SAC code:', pageWidth / 2 - 20, y + 5.5);
+            doc.setFont('helvetica', 'normal');
+            doc.text('9983', pageWidth / 2 + 10, y + 5.5);
+            y += 10;
+
+            // Transaction table header
+            doc.setFillColor(240, 240, 240);
+            doc.rect(10, y, pageWidth - 20, 10, 'F');
+            doc.rect(10, y, pageWidth - 20, 10);
+
+            const cols = [10, 60, 90, 110, 130, 150, 170, 190];
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Description', 12, y + 4);
+            doc.text('Transaction', 62, y + 4);
+            doc.text('Amount', 62, y + 8);
+            doc.text('CGST', 100, y + 6, { align: 'center' });
+            doc.text('SGST', 130, y + 6, { align: 'center' });
+            doc.text('IGST', 165, y + 6, { align: 'center' });
+
+            // Sub headers
+            y += 10;
+            doc.rect(10, y, pageWidth - 20, 6);
+            doc.setFontSize(7);
+            doc.text('Rate', 95, y + 4);
+            doc.text('Amount', 107, y + 4);
+            doc.text('Rate', 125, y + 4);
+            doc.text('Amount', 137, y + 4);
+            doc.text('Rate', 158, y + 4);
+            doc.text('Amount', 175, y + 4);
+
+            // Transaction row
+            y += 6;
+            doc.rect(10, y, pageWidth - 20, 14);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Professional Services`, 12, y + 5);
+            doc.text(`provided during`, 12, y + 9);
+            doc.text(`${monthName} ${year}`, 12, y + 13);
+            doc.text(baseAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }), 62, y + 8);
+            doc.text('-', 95, y + 8);
+            doc.text('-', 112, y + 8);
+            doc.text('-', 125, y + 8);
+            doc.text('-', 142, y + 8);
+            doc.text('18%', 158, y + 8);
+            doc.text(igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 }), 175, y + 8);
+
+            // Totals
+            y += 14;
+            const totals = [
+                ['Taxable Value:', baseAmount.toLocaleString('en-IN')],
+                ['GST Amount:', igstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })],
+                ['Total Value:', totalAmount.toLocaleString('en-IN')]
+            ];
+
+            totals.forEach(([label, value]) => {
+                doc.rect(10, y, pageWidth - 20, 7);
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, 60, y + 5);
+                doc.setFont('helvetica', 'normal');
+                doc.text(value, 110, y + 5);
+                y += 7;
+            });
+
+            // Amount in words
+            doc.rect(10, y, pageWidth - 20, 10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Rupees in words:', 12, y + 6);
+            doc.setFont('helvetica', 'normal');
+            doc.text(numberToWordsIndian(Math.round(totalAmount)), 50, y + 6);
+            y += 12;
+
+            // Bank Details section
+            doc.setFont('helvetica', 'bold');
+            doc.text('BANK DETAILS', 60, y + 5);
+            y += 8;
+
+            const bankDetails = [
+                ['Name:', contractor.name],
+                ['MICR:', contractor.micr],
+                ['Bank Name:', contractor.bankName],
+                ['Savings A/c No.:', contractor.bankAccount],
+                ['IFSC Code:', contractor.ifsc]
+            ];
+
+            bankDetails.forEach(([label, value]) => {
+                doc.rect(10, y, 90, 7);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, 12, y + 5);
+                doc.setFont('helvetica', 'normal');
+                doc.text(value, 45, y + 5);
+                y += 7;
+            });
+
+            // Signature box
+            doc.rect(100, y - 35, 90, 35);
+            doc.setFont('helvetica', 'bold');
+            doc.text('SIGNATURE', 145, y - 5, { align: 'center' });
+
+            // Terms
+            y += 5;
+            doc.rect(10, y, pageWidth - 20, 8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('ANY OTHER TERMS & CONDITION:', 12, y + 5.5);
+            doc.setFont('helvetica', 'normal');
+            doc.text('None', 100, y + 5.5);
+
+            // Generate blob and upload
+            const pdfBlob = doc.output('blob');
+            const fileName = `GST_Invoice_${invoiceNoStr}_${financialYear}_${monthName}_${year}_Rishabh.pdf`;
+            const filePath = `contractor_bills/${currentAdminEmail}_${String(month).padStart(2, '0')}_${year}.pdf`;
+
+            try {
+                // Upload to storage
+                const { data: uploadData, error: uploadError } = await client.storage
+                    .from('invoices')
+                    .upload(filePath, pdfBlob, { upsert: true, contentType: 'application/pdf' });
+
+                if (uploadError) throw uploadError;
+
+                // Get public URL
+                const { data: urlData } = client.storage
+                    .from('invoices')
+                    .getPublicUrl(filePath);
+
+                const fileUrl = urlData.publicUrl;
+
+                // Check for existing record and delete
+                const existingBill = allContractorBills.find(b =>
+                    b.uploaded_by === currentAdminEmail && b.month === month && b.year === year
+                );
+                if (existingBill) {
+                    await client.from('contractor_bills').delete().eq('id', existingBill.id);
+                }
+
+                // Insert record
+                const { error: insertError } = await client
+                    .from('contractor_bills')
+                    .insert({
+                        uploaded_by: currentAdminEmail,
+                        contractor_name: 'Rishabh Aditya',
+                        month: month,
+                        year: year,
+                        file_path: filePath,
+                        file_url: fileUrl
+                    });
+
+                if (insertError) throw insertError;
+
+                // Also download the PDF locally
+                doc.save(fileName);
+
+                alert('Bill generated and saved successfully!');
+                document.getElementById('generate-bill-invoice-no').value = '';
+                document.getElementById('generate-bill-amount').value = '';
+                await fetchContractorBills();
+
+            } catch (err) {
+                console.error('Error generating contractor bill:', err);
+                alert('Failed to save bill. The PDF has been downloaded locally.');
+                doc.save(fileName);
             }
         }
 
