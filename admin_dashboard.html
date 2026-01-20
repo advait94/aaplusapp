@@ -478,6 +478,8 @@
                 class="fa-solid fa-file-invoice-dollar"></i> Bills</a>
         <a href="#" onclick="switchView('consultations')" class="nav-item" id="nav-consultations"><i
                 class="fa-solid fa-headset"></i> Consultations</a>
+        <a href="#" onclick="switchView('contractor-bills')" class="nav-item" id="nav-contractor-bills"><i
+                class="fa-solid fa-file-contract"></i> Contractor Bills</a>
 
         <div style="margin-top:auto; padding-top:20px; border-top:1px solid #eee;">
             <div id="user-info" style="font-size:0.85rem; color:#666; margin-bottom:10px;">Admin</div>
@@ -855,6 +857,82 @@
             </div>
         </div>
 
+        <!-- CONTRACTOR BILLS VIEW -->
+        <div id="contractor-bills-view" style="display:none;">
+            <div class="header">
+                <div>
+                    <h1>Contractor Bills</h1>
+                    <p style="color:#6b7280; margin-top:5px;" id="contractor-bills-subtitle">View and download contractor bill submissions</p>
+                </div>
+            </div>
+
+            <!-- Upload Form (shown only for Rishabh) -->
+            <div id="contractor-upload-section" style="display:none; margin-bottom:30px;">
+                <div class="table-container" style="padding:24px;">
+                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-upload"></i> Upload Monthly Bill</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 2fr auto; gap:15px; align-items:end;">
+                        <div class="input-group">
+                            <label>Month</label>
+                            <select id="contractor-bill-month" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Year</label>
+                            <select id="contractor-bill-year" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                                <!-- Options populated by JS -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Bill File (PDF/Image)</label>
+                            <input type="file" id="contractor-bill-file" accept=".pdf,.png,.jpg,.jpeg"
+                                style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:6px;">
+                        </div>
+                        <button class="btn-action" onclick="uploadContractorBill()"
+                            style="background:var(--primary); color:white; border:none; padding:12px 24px; height:fit-content;">
+                            <i class="fa-solid fa-cloud-upload-alt"></i> Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bills Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3 style="margin:0; font-size:1.1rem;">Submitted Bills</h3>
+                    <span id="contractor-bills-count" style="color:#6b7280;"></span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month/Year</th>
+                            <th>Contractor</th>
+                            <th>Uploaded On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contractor-bills-list">
+                        <!-- Rows injected via JS -->
+                    </tbody>
+                </table>
+                <div id="contractor-bills-empty" style="display:none; text-align:center; padding:40px; color:#6b7280;">
+                    <i class="fa-solid fa-folder-open" style="font-size:3rem; margin-bottom:15px; opacity:0.5;"></i>
+                    <p>No contractor bills have been uploaded yet.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- CONSULTATION DETAIL MODAL -->
@@ -1069,8 +1147,15 @@
 
         let projectPayments = [];
 
-        // Restricted users who can only see their assigned consultations (defined early for init check)
-        const CONSULTATION_ONLY_USERS = ['rishabh@aaplusconsultants.com'];
+        // Restricted users who can only see Consultations and Contractor Bills (defined early for init check)
+        const RESTRICTED_USERS = ['rishabh@aaplusconsultants.com'];
+        // Keep alias for backward compatibility
+        const CONSULTATION_ONLY_USERS = RESTRICTED_USERS;
+
+        // Contractor name mapping for display
+        const CONTRACTOR_NAMES = {
+            'rishabh@aaplusconsultants.com': 'Rishabh Aditya'
+        };
 
         async function init() {
             const { data: { session } } = await client.auth.getSession();
@@ -1078,27 +1163,32 @@
             document.getElementById('user-info').innerText = session.user.email;
             currentAdminEmail = session.user.email;
 
-            // Check if this is a restricted user (consultation-only access)
-            const isRestrictedUser = CONSULTATION_ONLY_USERS.includes(session.user.email);
+            // Check if this is a restricted user (consultation + contractor bills access)
+            const isRestrictedUser = RESTRICTED_USERS.includes(session.user.email);
 
             if (isRestrictedUser) {
-                // Hide all navigation items except Consultations
+                // Hide all navigation items except Consultations and Contractor Bills
                 document.getElementById('nav-dashboard').style.display = 'none';
                 document.getElementById('nav-employees').style.display = 'none';
                 document.getElementById('nav-expenses').style.display = 'none';
                 document.getElementById('nav-bills').style.display = 'none';
 
                 // Update brand text for restricted user
-                document.querySelector('.brand').innerHTML = '<img src="AAPlus Logo.png" alt="AA Plus Logo" style="height:30px;"> Consultations';
+                document.querySelector('.brand').innerHTML = '<img src="AAPlus Logo.png" alt="AA Plus Logo" style="height:30px;"> Portal';
 
-                // Hide the dashboard view and show consultations directly
+                // Hide the dashboard view and show contractor bills directly (default for Rishabh)
                 document.getElementById('dashboard-view').style.display = 'none';
-                document.getElementById('consultations-view').style.display = 'block';
-                document.getElementById('nav-consultations').classList.add('active');
+                document.getElementById('contractor-bills-view').style.display = 'block';
+                document.getElementById('nav-contractor-bills').classList.add('active');
 
-                // Fetch consultations for this restricted user
+                // Show upload section for contractors
+                document.getElementById('contractor-upload-section').style.display = 'block';
+                document.getElementById('contractor-bills-subtitle').innerText = 'Upload and manage your monthly bill submissions';
+                initContractorBillYearDropdown();
+
+                // Fetch contractor bills for this user
                 document.getElementById('loading-screen').style.display = 'none';
-                await fetchConsultations();
+                await fetchContractorBills();
                 return;
             }
 
@@ -3062,8 +3152,9 @@
         }
 
         function switchView(viewName) {
-            // Prevent restricted users from accessing views other than consultations
-            if (CONSULTATION_ONLY_USERS.includes(currentAdminEmail) && viewName !== 'consultations') {
+            // Prevent restricted users from accessing views other than consultations and contractor-bills
+            if (RESTRICTED_USERS.includes(currentAdminEmail) &&
+                viewName !== 'consultations' && viewName !== 'contractor-bills') {
                 return;
             }
 
@@ -3072,12 +3163,14 @@
             const expenses = document.getElementById('expenses-view');
             const bills = document.getElementById('bills-view');
             const consultations = document.getElementById('consultations-view');
+            const contractorBills = document.getElementById('contractor-bills-view');
 
             const navDash = document.getElementById('nav-dashboard');
             const navEmp = document.getElementById('nav-employees');
             const navExp = document.getElementById('nav-expenses');
             const navBills = document.getElementById('nav-bills');
             const navConsult = document.getElementById('nav-consultations');
+            const navContractorBills = document.getElementById('nav-contractor-bills');
 
             // Reset
             dashboard.style.display = 'none';
@@ -3085,11 +3178,13 @@
             expenses.style.display = 'none';
             bills.style.display = 'none';
             if (consultations) consultations.style.display = 'none';
+            if (contractorBills) contractorBills.style.display = 'none';
             navDash.classList.remove('active');
             if (navEmp) navEmp.classList.remove('active');
             if (navExp) navExp.classList.remove('active');
             if (navBills) navBills.classList.remove('active');
             if (navConsult) navConsult.classList.remove('active');
+            if (navContractorBills) navContractorBills.classList.remove('active');
 
             if (viewName === 'dashboard') {
                 dashboard.style.display = 'block';
@@ -3112,7 +3207,179 @@
                 if (consultations) consultations.style.display = 'block';
                 if (navConsult) navConsult.classList.add('active');
                 fetchConsultations();
+            } else if (viewName === 'contractor-bills') {
+                if (contractorBills) contractorBills.style.display = 'block';
+                if (navContractorBills) navContractorBills.classList.add('active');
+                fetchContractorBills();
             }
+        }
+
+        // --- CONTRACTOR BILLS FUNCTIONS ---
+        let allContractorBills = [];
+
+        function initContractorBillYearDropdown() {
+            const yearSelect = document.getElementById('contractor-bill-year');
+            const currentYear = new Date().getFullYear();
+            yearSelect.innerHTML = '';
+            for (let y = currentYear; y >= currentYear - 2; y--) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                yearSelect.appendChild(opt);
+            }
+            // Set current month
+            const monthSelect = document.getElementById('contractor-bill-month');
+            monthSelect.value = new Date().getMonth() + 1;
+        }
+
+        async function fetchContractorBills() {
+            try {
+                const { data, error } = await client
+                    .from('contractor_bills')
+                    .select('*')
+                    .order('year', { ascending: false })
+                    .order('month', { ascending: false });
+
+                if (error) throw error;
+
+                allContractorBills = data || [];
+                renderContractorBills();
+            } catch (err) {
+                console.error('Error fetching contractor bills:', err);
+                allContractorBills = [];
+                renderContractorBills();
+            }
+        }
+
+        function renderContractorBills() {
+            const tbody = document.getElementById('contractor-bills-list');
+            const emptyDiv = document.getElementById('contractor-bills-empty');
+            const countSpan = document.getElementById('contractor-bills-count');
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+
+            if (allContractorBills.length === 0) {
+                tbody.innerHTML = '';
+                emptyDiv.style.display = 'block';
+                countSpan.textContent = '';
+                return;
+            }
+
+            emptyDiv.style.display = 'none';
+            countSpan.textContent = `${allContractorBills.length} bill(s)`;
+
+            tbody.innerHTML = allContractorBills.map(bill => {
+                const uploadDate = new Date(bill.created_at).toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                const monthYear = `${monthNames[bill.month - 1]} ${bill.year}`;
+
+                return `
+                    <tr>
+                        <td style="font-weight:600;">${monthYear}</td>
+                        <td>${bill.contractor_name}</td>
+                        <td style="color:#6b7280;">${uploadDate}</td>
+                        <td>
+                            <button class="btn-action" onclick="downloadContractorBill('${bill.file_url}', '${bill.contractor_name}_${monthNames[bill.month - 1]}_${bill.year}')">
+                                <i class="fa-solid fa-download"></i> Download
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function uploadContractorBill() {
+            const monthSelect = document.getElementById('contractor-bill-month');
+            const yearSelect = document.getElementById('contractor-bill-year');
+            const fileInput = document.getElementById('contractor-bill-file');
+
+            const month = parseInt(monthSelect.value);
+            const year = parseInt(yearSelect.value);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please upload a PDF or image file (PNG, JPG).');
+                return;
+            }
+
+            // Check for duplicate month/year
+            const existingBill = allContractorBills.find(b =>
+                b.uploaded_by === currentAdminEmail && b.month === month && b.year === year
+            );
+
+            if (existingBill) {
+                const confirmReplace = confirm(`You already uploaded a bill for this month. Do you want to replace it?`);
+                if (!confirmReplace) return;
+
+                // Delete existing record (file will be overwritten)
+                await client.from('contractor_bills').delete().eq('id', existingBill.id);
+            }
+
+            try {
+                // Create file path
+                const fileExt = file.name.split('.').pop();
+                const monthPadded = month.toString().padStart(2, '0');
+                const filePath = `contractor_bills/${currentAdminEmail}_${monthPadded}_${year}.${fileExt}`;
+
+                // Upload to storage
+                const { data: uploadData, error: uploadError } = await client.storage
+                    .from('invoices')
+                    .upload(filePath, file, { upsert: true });
+
+                if (uploadError) throw uploadError;
+
+                // Get public URL
+                const { data: urlData } = client.storage
+                    .from('invoices')
+                    .getPublicUrl(filePath);
+
+                const fileUrl = urlData.publicUrl;
+
+                // Get contractor name
+                const contractorName = CONTRACTOR_NAMES[currentAdminEmail] || currentAdminEmail;
+
+                // Insert record
+                const { error: insertError } = await client
+                    .from('contractor_bills')
+                    .insert({
+                        uploaded_by: currentAdminEmail,
+                        contractor_name: contractorName,
+                        month: month,
+                        year: year,
+                        file_path: filePath,
+                        file_url: fileUrl
+                    });
+
+                if (insertError) throw insertError;
+
+                alert('Bill uploaded successfully!');
+                fileInput.value = '';
+                await fetchContractorBills();
+
+            } catch (err) {
+                console.error('Error uploading contractor bill:', err);
+                alert('Failed to upload bill. Please try again.');
+            }
+        }
+
+        function downloadContractorBill(fileUrl, fileName) {
+            // Create a temporary link to trigger download
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = fileName;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // --- STARTUP LOGIC ---
