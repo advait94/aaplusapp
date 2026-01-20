@@ -1057,6 +1057,54 @@
         </div>
     </div>
 
+    <!-- EDIT EXPENSE MODAL -->
+    <div id="edit-expense-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 500px; height: auto; padding: 30px; border-radius: 12px;">
+            <span class="close-modal" onclick="closeEditExpenseModal()">&times;</span>
+            <h2 style="margin-top:0; margin-bottom:20px;">Edit Expense</h2>
+            <input type="hidden" id="edit-exp-id">
+            <div class="input-group" style="margin-bottom:15px;">
+                <label>Category</label>
+                <select id="edit-exp-category"
+                    style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:6px; font-family:inherit;">
+                    <option value="General">General</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Staff Welfare">Staff Welfare</option>
+                    <option value="Business Promotion">Business Promotion</option>
+                    <option value="Vehicle/Petrol">Vehicle/Petrol</option>
+                    <option value="Books">Books</option>
+                    <option value="Medical">Medical</option>
+                </select>
+            </div>
+            <div class="input-group" style="margin-bottom:15px;">
+                <label>Name/Vendor</label>
+                <input type="text" id="edit-exp-name" placeholder="e.g. Bikanerwala">
+            </div>
+            <div class="input-group" style="margin-bottom:15px;">
+                <label>Invoice No.</label>
+                <input type="text" id="edit-exp-invoice" placeholder="e.g. INV-12345">
+            </div>
+            <div class="input-group"
+                style="margin-bottom:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                    <label>Amount (₹)</label>
+                    <input type="number" id="edit-exp-amount" placeholder="0.00">
+                </div>
+                <div>
+                    <label>Date</label>
+                    <input type="date" id="edit-exp-date">
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom:15px;">
+                <label>Paid By</label>
+                <input type="text" id="edit-exp-payment" placeholder="e.g. AA+ Card, Cash, UPI">
+            </div>
+            <button class="btn-action" style="background:#2563eb; color:white; width:100%; padding:10px;"
+                onclick="updateExpense()">Update Expense</button>
+        </div>
+    </div>
+
     <!-- UPLOAD EXCEL MODAL -->
     <div id="upload-expense-modal" class="modal-overlay">
         <div class="modal-content"
@@ -2442,7 +2490,10 @@
                                 <td class="amount" style="color:#ef4444;">₹${e.amount.toLocaleString('en-IN')}</td>
                                 <td>${new Date(e.date).toLocaleDateString('en-IN')}</td>
                                 <td style="color:#6b7280; font-size:0.85rem;">${e.payment_method || '-'}</td>
-                                <td>
+                                <td style="display:flex; gap:6px;">
+                                    <button class="btn-action" style="border-color:#2563eb; color:#2563eb; padding:6px 10px;" onclick="openEditExpenseModal('${e.id}')">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
                                     <button class="btn-action" style="border-color:#ef4444; color:#ef4444; padding:6px 10px;" onclick="deleteExpense('${e.id}')">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -2551,6 +2602,60 @@
             const { error } = await client.from('expenses').delete().eq('id', id);
             if (error) alert("Error: " + error.message);
             else await fetchExpenses();
+        }
+
+        function openEditExpenseModal(id) {
+            const expense = EXPENSES.find(e => e.id === id);
+            if (!expense) {
+                alert("Expense not found");
+                return;
+            }
+
+            document.getElementById('edit-exp-id').value = expense.id;
+            document.getElementById('edit-exp-category').value = expense.category || 'General';
+            document.getElementById('edit-exp-name').value = expense.name || '';
+            document.getElementById('edit-exp-invoice').value = expense.invoice_no || '';
+            document.getElementById('edit-exp-amount').value = expense.amount || '';
+            document.getElementById('edit-exp-date').value = expense.date || '';
+            document.getElementById('edit-exp-payment').value = expense.payment_method || '';
+
+            document.getElementById('edit-expense-modal').style.display = 'flex';
+        }
+
+        function closeEditExpenseModal() {
+            document.getElementById('edit-expense-modal').style.display = 'none';
+        }
+
+        async function updateExpense() {
+            const id = document.getElementById('edit-exp-id').value;
+            const category = document.getElementById('edit-exp-category').value;
+            const name = document.getElementById('edit-exp-name').value;
+            const invoice = document.getElementById('edit-exp-invoice').value;
+            const amount = parseFloat(document.getElementById('edit-exp-amount').value);
+            const date = document.getElementById('edit-exp-date').value;
+            const payment = document.getElementById('edit-exp-payment').value;
+
+            if (!name || isNaN(amount)) {
+                alert("Please fill Name and Amount");
+                return;
+            }
+
+            const { error } = await client.from('expenses').update({
+                name,
+                amount,
+                date,
+                category,
+                invoice_no: invoice,
+                payment_method: payment
+            }).eq('id', id);
+
+            if (error) {
+                alert("Error updating expense: " + error.message);
+            } else {
+                alert("Expense updated!");
+                closeEditExpenseModal();
+                await fetchExpenses();
+            }
         }
 
         // --- EXCEL UPLOAD LOGIC ---
