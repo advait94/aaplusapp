@@ -3380,15 +3380,24 @@
                 });
                 const monthYear = `${monthNames[bill.month - 1]} ${bill.year}`;
 
+                // Show delete button only for the user who uploaded the bill
+                const canDelete = bill.uploaded_by === currentAdminEmail;
+                const deleteBtn = canDelete ? `
+                    <button class="btn-action" style="border-color:#ef4444; color:#ef4444; margin-left:6px;" onclick="deleteContractorBill('${bill.id}', '${bill.file_path}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                ` : '';
+
                 return `
                     <tr>
                         <td style="font-weight:600;">${monthYear}</td>
                         <td>${bill.contractor_name}</td>
                         <td style="color:#6b7280;">${uploadDate}</td>
-                        <td>
+                        <td style="display:flex; gap:6px;">
                             <button class="btn-action" onclick="downloadContractorBill('${bill.file_url}', '${bill.contractor_name}_${monthNames[bill.month - 1]}_${bill.year}')">
                                 <i class="fa-solid fa-download"></i> Download
                             </button>
+                            ${deleteBtn}
                         </td>
                     </tr>
                 `;
@@ -3485,6 +3494,36 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        async function deleteContractorBill(billId, filePath) {
+            if (!confirm("Are you sure you want to delete this bill?")) return;
+
+            try {
+                // Delete file from storage
+                const { error: storageError } = await client.storage
+                    .from('invoices')
+                    .remove([filePath]);
+
+                if (storageError) {
+                    console.warn('Storage delete error (file may not exist):', storageError);
+                }
+
+                // Delete record from database
+                const { error: dbError } = await client
+                    .from('contractor_bills')
+                    .delete()
+                    .eq('id', billId);
+
+                if (dbError) throw dbError;
+
+                alert('Bill deleted successfully!');
+                await fetchContractorBills();
+
+            } catch (err) {
+                console.error('Error deleting contractor bill:', err);
+                alert('Failed to delete bill. Please try again.');
+            }
         }
 
         // --- STARTUP LOGIC ---

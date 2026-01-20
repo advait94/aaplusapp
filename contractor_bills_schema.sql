@@ -27,3 +27,8 @@ create policy "Contractors can insert their own bills"
   on public.contractor_bills for insert
   to authenticated
   with check (auth.email() = uploaded_by);
+
+create policy "Contractors can delete their own bills"
+  on public.contractor_bills for delete
+  to authenticated
+  using (auth.email() = uploaded_by);
