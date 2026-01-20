@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AA Plus Compliance Platform - Product Presentation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            position: relative;
+        }
+
+        .slide:nth-child(odd) {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .slide:nth-child(even) {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* Title Slide */
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%);
+        }
+
+        .title-slide .logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .title-slide .logo img {
+            width: 80px;
+        }
+
+        .title-slide h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .title-slide .tagline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .title-slide .presenter {
+            margin-top: 60px;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Section Headers */
+        h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+
+        /* Problem Slide */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+        }
+
+        .problem-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .problem-card i {
+            font-size: 2rem;
+            color: #ef4444;
+            flex-shrink: 0;
+        }
+
+        .problem-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fca5a5;
+        }
+
+        .problem-card p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* Solution Slide */
+        .solution-intro {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 50px;
+        }
+
+        .solution-intro p {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        .solution-highlight {
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1400px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #3b82f6;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-card .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .feature-card .icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #f1f5f9;
+        }
+
+        .feature-card p {
+            color: #94a3b8;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Feature Deep Dive */
+        .feature-detail {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            max-width: 1200px;
+        }
+
+        .feature-detail.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .feature-detail .content {
+            flex: 1;
+        }
+
+        .feature-detail .visual {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .feature-detail ul {
+            list-style: none;
+            margin-top: 25px;
+        }
+
+        .feature-detail li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .feature-detail li i {
+            color: #10b981;
+            margin-top: 4px;
+        }
+
+        .feature-detail .description {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat .number {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat .label {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* Benefits */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1100px;
+        }
+
+        .benefit-card {
+            display: flex;
+            gap: 25px;
+            padding: 30px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+        }
+
+        .benefit-card .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .benefit-card .icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .benefit-card h4 {
+            font-size: 1.2rem;
+            color: #6ee7b7;
+            margin-bottom: 10px;
+        }
+
+        .benefit-card p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* CTA Slide */
+        .cta-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+        }
+
+        .cta-slide h2 {
+            font-size: 3.5rem;
+            color: white;
+            -webkit-text-fill-color: white;
+            margin-bottom: 30px;
+        }
+
+        .cta-slide p {
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 700px;
+            line-height: 1.8;
+            margin-bottom: 50px;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 50px;
+            background: white;
+            color: #1e40af;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 60px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+        }
+
+        .contact-info {
+            margin-top: 60px;
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .contact-item i {
+            font-size: 1.3rem;
+        }
+
+        /* Slide number */
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Screenshot placeholder */
+        .screenshot {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .screenshot i {
+            font-size: 4rem;
+            color: rgba(255,255,255,0.2);
+        }
+
+        /* License Types */
+        .license-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1000px;
+        }
+
+        .license-badge {
+            padding: 15px 35px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #93c5fd;
+        }
+
+        /* Workflow */
+        .workflow {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 1200px;
+        }
+
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .workflow-step .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .workflow-step h4 {
+            color: #f1f5f9;
+            margin-bottom: 10px;
+        }
+
+        .workflow-step p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .workflow-arrow {
+            font-size: 2rem;
+            color: #3b82f6;
+        }
+
+        @media print {
+            .slide {
+                page-break-after: always;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Title -->
+    <section class="slide title-slide">
+        <div class="logo">
+            <img src="AAPlus Logo.png" alt="AA Plus Logo">
+        </div>
+        <h1>Telecom Compliance Platform</h1>
+        <p class="tagline">Simplify your DoT compliance journey with intelligent tracking, expert guidance, and AI-powered knowledge at your fingertips</p>
+        <div class="presenter">
+            <strong>AA Plus Consultants</strong> | Trusted Telecom Compliance Partners
+        </div>
+        <span class="slide-number">1</span>
+    </section>
+
+    <!-- Slide 2: The Problem -->
+    <section class="slide">
+        <h2>The Compliance Challenge</h2>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <i class="fa-solid fa-calendar-xmark"></i>
+                <div>
+                    <h4>Missed Deadlines</h4>
+                    <p>With multiple compliance requirements across different frequencies, it's easy to miss critical deadlines leading to penalties and license issues.</p>
+                </div>
+            </div>
+            <div class="problem-card">
+                <i class="fa-solid fa-file-circle-question"></i>
+                <div>
+                    <h4>Complex Regulations</h4>
+                    <p>DoT regulations are complex and constantly evolving. Understanding what applies to your specific license type is overwhelming.</p>
+                </div>
+            </div>
+            <div class="problem-card">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <div>
+                    <h4>Manual Tracking</h4>
+                    <p>Spreadsheets and manual tracking are error-prone, time-consuming, and don't scale with your business growth.</p>
+                </div>
+            </div>
+            <div class="problem-card">
+                <i class="fa-solid fa-user-slash"></i>
+                <div>
+                    <h4>Limited Expert Access</h4>
+                    <p>Getting timely expert advice on compliance queries is difficult and expensive, causing delays in decision-making.</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">2</span>
+    </section>
+
+    <!-- Slide 3: Our Solution -->
+    <section class="slide">
+        <h2>Introducing Our Solution</h2>
+        <div class="solution-intro">
+            <p>A <span class="solution-highlight">comprehensive digital platform</span> that transforms how telecom companies manage their DoT compliance obligations - making it simple, automated, and intelligent.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <h4>Smart Compliance Tracking</h4>
+                <p>Automated deadline tracking with intelligent urgency scoring and real-time status updates</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fa-solid fa-robot"></i></div>
+                <h4>AI Knowledge Assistant</h4>
+                <p>24/7 AI-powered chatbot trained on DoT regulations, circulars, and compliance requirements</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fa-solid fa-headset"></i></div>
+                <h4>Expert Consultation</h4>
+                <p>Direct access to senior compliance experts for complex queries and urgent matters</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h4>Multi-License Support</h4>
+                <p>Manage compliance for multiple license types and services from a single dashboard</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fa-solid fa-users"></i></div>
+                <h4>Team Collaboration</h4>
+                <p>Add team members with role-based access to distribute compliance responsibilities</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fa-solid fa-bell"></i></div>
+                <h4>Proactive Alerts</h4>
+                <p>Never miss a deadline with smart notifications for upcoming and overdue tasks</p>
+            </div>
+        </div>
+        <span class="slide-number">3</span>
+    </section>
+
+    <!-- Slide 4: Compliance Tracking Deep Dive -->
+    <section class="slide">
+        <h2>Smart Compliance Tracking</h2>
+        <div class="feature-detail">
+            <div class="content">
+                <p class="description">Our intelligent compliance engine automatically tracks all your regulatory obligations based on your specific license type and services.</p>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> <strong>License-Specific Rules:</strong> See only the compliance items that apply to your UL, UL-VNO, ISP, NLD, or other license types</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Automatic Deadline Calculation:</strong> System calculates due dates based on frequency (Monthly, Quarterly, Annual)</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Urgency-Based Prioritization:</strong> Critical and overdue items are highlighted prominently</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Category Filtering:</strong> Filter by General, Financial, Technical, Security, or Operating requirements</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Progress Tracking:</strong> Mark items complete and track your compliance progress over time</li>
+                </ul>
+            </div>
+            <div class="visual">
+                <div class="screenshot">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <p style="text-align:center; margin-top:15px; color:#64748b; font-size:0.9rem;">Compliance Dashboard View</p>
+            </div>
+        </div>
+        <span class="slide-number">4</span>
+    </section>
+
+    <!-- Slide 5: AI Chatbot -->
+    <section class="slide">
+        <h2>AI-Powered Knowledge Assistant</h2>
+        <div class="feature-detail reverse">
+            <div class="content">
+                <p class="description">Get instant answers to your compliance questions with our AI assistant, trained on the complete DoT regulatory knowledge base.</p>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> <strong>Instant Answers:</strong> No waiting - get immediate responses to your compliance queries</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Comprehensive Knowledge:</strong> Trained on DoT regulations, circulars, fee structures, and procedures</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Contextual Understanding:</strong> Remembers your conversation history for relevant follow-ups</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Available 24/7:</strong> Get help anytime, even outside business hours</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Always Up-to-Date:</strong> Knowledge base regularly updated with latest regulations</li>
+                </ul>
+            </div>
+            <div class="visual">
+                <div class="screenshot">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <p style="text-align:center; margin-top:15px; color:#64748b; font-size:0.9rem;">AI Chat Interface</p>
+            </div>
+        </div>
+        <span class="slide-number">5</span>
+    </section>
+
+    <!-- Slide 6: Expert Consultation -->
+    <section class="slide">
+        <h2>Expert Consultation Service</h2>
+        <div class="feature-detail">
+            <div class="content">
+                <p class="description">For complex matters that need human expertise, book consultations directly with our senior compliance specialists.</p>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> <strong>Choose Your Expert:</strong> Select from our panel of experienced compliance consultants</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Priority Handling:</strong> Mark urgent requests for expedited response</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Callback Option:</strong> Request phone callbacks for high-priority matters</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Track Status:</strong> Monitor your consultation requests from submission to resolution</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Expert Network:</strong> Access specialists in licensing, audits, and regulatory affairs</li>
+                </ul>
+            </div>
+            <div class="visual">
+                <div class="screenshot">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <p style="text-align:center; margin-top:15px; color:#64748b; font-size:0.9rem;">Expert Selection Interface</p>
+            </div>
+        </div>
+        <span class="slide-number">6</span>
+    </section>
+
+    <!-- Slide 7: Supported License Types -->
+    <section class="slide">
+        <h2>Supported License Types</h2>
+        <p style="text-align:center; color:#94a3b8; font-size:1.2rem; margin-bottom:50px; max-width:700px;">Our platform supports all major DoT license categories with service-specific compliance requirements</p>
+        <div class="license-grid">
+            <div class="license-badge">UL (Unified License)</div>
+            <div class="license-badge">UL-VNO</div>
+            <div class="license-badge">ISP License</div>
+            <div class="license-badge">NLD License</div>
+            <div class="license-badge">ILD License</div>
+            <div class="license-badge">VSAT License</div>
+            <div class="license-badge">IP-1 Registration</div>
+            <div class="license-badge">OSP Registration</div>
+        </div>
+        <div class="stats-row">
+            <div class="stat">
+                <div class="number">100+</div>
+                <div class="label">Compliance Rules Tracked</div>
+            </div>
+            <div class="stat">
+                <div class="number">5</div>
+                <div class="label">Compliance Categories</div>
+            </div>
+            <div class="stat">
+                <div class="number">24/7</div>
+                <div class="label">AI Support Available</div>
+            </div>
+        </div>
+        <span class="slide-number">7</span>
+    </section>
+
+    <!-- Slide 8: How It Works -->
+    <section class="slide">
+        <h2>How It Works</h2>
+        <div class="workflow">
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <h4>Sign Up</h4>
+                <p>Create your account and select your license types</p>
+            </div>
+            <i class="fa-solid fa-arrow-right workflow-arrow"></i>
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <h4>Configure</h4>
+                <p>Add your services and team members</p>
+            </div>
+            <i class="fa-solid fa-arrow-right workflow-arrow"></i>
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <h4>Track</h4>
+                <p>Monitor compliance tasks and deadlines</p>
+            </div>
+            <i class="fa-solid fa-arrow-right workflow-arrow"></i>
+            <div class="workflow-step">
+                <div class="step-number">4</div>
+                <h4>Complete</h4>
+                <p>Mark tasks done and stay compliant</p>
+            </div>
+        </div>
+        <span class="slide-number">8</span>
+    </section>
+
+    <!-- Slide 9: Benefits -->
+    <section class="slide">
+        <h2>Key Benefits</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div>
+                    <h4>Avoid Penalties</h4>
+                    <p>Never miss a compliance deadline again. Our proactive tracking ensures you stay ahead of all regulatory requirements.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="icon"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <h4>Save Time</h4>
+                    <p>Reduce manual tracking effort by up to 80%. Spend less time on compliance admin and more on growing your business.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="icon"><i class="fa-solid fa-brain"></i></div>
+                <div>
+                    <h4>Instant Knowledge</h4>
+                    <p>Get immediate answers to compliance questions without searching through lengthy documents or waiting for callbacks.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="icon"><i class="fa-solid fa-chart-simple"></i></div>
+                <div>
+                    <h4>Complete Visibility</h4>
+                    <p>See your entire compliance status at a glance. Know exactly where you stand across all your licenses and services.</p>
+                </div>
+            </div>
+        </div>
+        <span class="slide-number">9</span>
+    </section>
+
+    <!-- Slide 10: CTA -->
+    <section class="slide cta-slide">
+        <h2>Ready to Simplify Your Compliance?</h2>
+        <p>Join leading telecom companies who trust AA Plus for their compliance management. Get started today and experience the difference.</p>
+        <a href="#" class="cta-button">
+            <i class="fa-solid fa-rocket"></i>
+            Schedule a Demo
+        </a>
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                info@aaplusconsultants.com
+            </div>
+            <div class="contact-item">
+                <i class="fa-solid fa-phone"></i>
+                +91 98XXX XXXXX
+            </div>
+            <div class="contact-item">
+                <i class="fa-solid fa-globe"></i>
+                www.aaplusconsultants.com
+            </div>
+        </div>
+        <span class="slide-number">10</span>
+    </section>
+
+</body>
+</html>
