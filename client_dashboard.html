@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -388,7 +389,7 @@
             padding: 32px;
             margin-bottom: 28px;
             color: white;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -406,13 +407,25 @@
         }
 
         @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         @keyframes rotateBg {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .score-header {
@@ -421,7 +434,7 @@
             align-items: center;
             margin-bottom: 28px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
             z-index: 1;
         }
@@ -442,13 +455,22 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
         }
 
         .score-timestamp {
             font-size: 0.8rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -464,8 +486,15 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
         }
 
         .score-dashboard {
@@ -483,9 +512,9 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .gauge {
@@ -499,18 +528,16 @@
             width: 100%;
             height: 0;
             padding-bottom: 100%;
-            background: conic-gradient(
-                from 210deg,
-                #ef4444 0deg,
-                #f97316 40deg,
-                #f59e0b 60deg,
-                #eab308 80deg,
-                #84cc16 100deg,
-                #22c55e 120deg,
-                #10b981 140deg,
-                #14b8a6 160deg,
-                rgba(255,255,255,0.08) 162deg
-            );
+            background: conic-gradient(from 210deg,
+                    #ef4444 0deg,
+                    #f97316 40deg,
+                    #f59e0b 60deg,
+                    #eab308 80deg,
+                    #84cc16 100deg,
+                    #22c55e 120deg,
+                    #10b981 140deg,
+                    #14b8a6 160deg,
+                    rgba(255, 255, 255, 0.08) 162deg);
             border-radius: 50%;
             position: relative;
             box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
@@ -518,8 +545,13 @@
         }
 
         @keyframes gaugeGlow {
-            from { box-shadow: 0 0 30px rgba(16, 185, 129, 0.15); }
-            to { box-shadow: 0 0 50px rgba(16, 185, 129, 0.25); }
+            from {
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+            }
+
+            to {
+                box-shadow: 0 0 50px rgba(16, 185, 129, 0.25);
+            }
         }
 
         .gauge-body::before {
@@ -532,7 +564,7 @@
             height: 68%;
             background: linear-gradient(145deg, #1a2332 0%, #0f172a 100%);
             border-radius: 50%;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .gauge-cover {
@@ -555,7 +587,7 @@
             transform: translateX(-50%) rotate(calc(var(--needle-rotation, -90) * 1deg));
             transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-radius: 4px 4px 0 0;
-            box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
         }
 
         .gauge-needle::after {
@@ -568,7 +600,7 @@
             height: 20px;
             background: radial-gradient(circle, #fff 0%, #cbd5e1 100%);
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255,255,255,0.5), 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .gauge-value-display {
@@ -586,7 +618,7 @@
 
         .gauge-label {
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             margin-top: 8px;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -600,7 +632,7 @@
             padding: 0 15px;
             margin-top: 10px;
             font-size: 0.75rem;
-            color: rgba(255,255,255,0.35);
+            color: rgba(255, 255, 255, 0.35);
             font-weight: 600;
         }
 
@@ -612,13 +644,13 @@
         }
 
         .mini-gauge-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
             border-radius: 20px;
             padding: 20px 16px;
             text-align: center;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
             overflow: hidden;
         }
@@ -630,15 +662,15 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 50% 0%, var(--gauge-color, rgba(255,255,255,0.1)) 0%, transparent 70%);
+            background: radial-gradient(circle at 50% 0%, var(--gauge-color, rgba(255, 255, 255, 0.1)) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s ease;
         }
 
         .mini-gauge-card:hover {
             transform: translateY(-8px) scale(1.02);
-            border-color: rgba(255,255,255,0.15);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px var(--card-glow, rgba(16, 185, 129, 0.15));
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--card-glow, rgba(16, 185, 129, 0.15));
         }
 
         .mini-gauge-card:hover::before {
@@ -667,12 +699,10 @@
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: conic-gradient(
-                from 210deg,
-                var(--gauge-color, #10b981) 0deg,
-                var(--gauge-color, #10b981) calc(var(--gauge-percent, 0) * 1.62deg),
-                rgba(255,255,255,0.08) calc(var(--gauge-percent, 0) * 1.62deg)
-            );
+            background: conic-gradient(from 210deg,
+                    var(--gauge-color, #10b981) 0deg,
+                    var(--gauge-color, #10b981) calc(var(--gauge-percent, 0) * 1.62deg),
+                    rgba(255, 255, 255, 0.08) calc(var(--gauge-percent, 0) * 1.62deg));
             position: absolute;
             top: 0;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -711,17 +741,17 @@
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 700;
             margin-bottom: 4px;
         }
 
         .mini-gauge-stats {
             font-size: 0.7rem;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
             margin-top: 10px;
             padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         /* Score Colors with glow effects */
@@ -729,14 +759,17 @@
             color: #10b981;
             --card-glow: rgba(16, 185, 129, 0.3);
         }
+
         .score-good {
             color: #3b82f6;
             --card-glow: rgba(59, 130, 246, 0.3);
         }
+
         .score-warning {
             color: #f59e0b;
             --card-glow: rgba(245, 158, 11, 0.3);
         }
+
         .score-critical {
             color: #ef4444;
             --card-glow: rgba(239, 68, 68, 0.3);
@@ -748,6 +781,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -758,23 +792,39 @@
             animation: fadeSlideUp 0.6s ease forwards;
         }
 
-        .mini-gauge-card:nth-child(1) { animation-delay: 0.1s; }
-        .mini-gauge-card:nth-child(2) { animation-delay: 0.2s; }
-        .mini-gauge-card:nth-child(3) { animation-delay: 0.3s; }
-        .mini-gauge-card:nth-child(4) { animation-delay: 0.4s; }
-        .mini-gauge-card:nth-child(5) { animation-delay: 0.5s; }
+        .mini-gauge-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .mini-gauge-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .mini-gauge-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .mini-gauge-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .mini-gauge-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
 
         /* Responsive for score container */
         @media (max-width: 1100px) {
             .score-dashboard {
                 grid-template-columns: 1fr;
             }
+
             .main-gauge-container {
                 margin-bottom: 20px;
                 max-width: 320px;
                 margin-left: auto;
                 margin-right: auto;
             }
+
             .category-gauges {
                 grid-template-columns: repeat(5, 1fr);
             }
@@ -784,6 +834,7 @@
             .category-gauges {
                 grid-template-columns: repeat(3, 1fr);
             }
+
             .compliance-score-container {
                 padding: 24px 20px;
             }
@@ -793,13 +844,16 @@
             .category-gauges {
                 grid-template-columns: repeat(2, 1fr);
             }
+
             .gauge {
                 width: 180px;
                 height: 110px;
             }
+
             .gauge-needle {
                 height: 60px;
             }
+
             .gauge-value {
                 font-size: 2.2rem;
             }
@@ -1033,6 +1087,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1183,7 +1238,9 @@
 
         /* Responsive Styles - Mobile */
         @media (max-width: 768px) {
-            .mobile-menu-toggle { display: block; }
+            .mobile-menu-toggle {
+                display: block;
+            }
 
             .sidebar {
                 position: fixed !important;
@@ -1202,7 +1259,9 @@
                 left: 0 !important;
             }
 
-            .sidebar-overlay.open { display: block; }
+            .sidebar-overlay.open {
+                display: block;
+            }
 
             body {
                 display: block !important;
@@ -1386,7 +1445,8 @@
         <a href="apply_license.html" class="nav-item"><i class="fa-solid fa-plus-circle"></i> Apply for New License</a>
 
         <div class="nav-section" style="margin-top:20px;">Support</div>
-        <a href="#" class="nav-item" onclick="openExpertConsultation(); return false;"><i class="fa-solid fa-user-tie"></i> Consult an Expert</a>
+        <a href="#" class="nav-item" onclick="openExpertConsultation(); return false;"><i
+                class="fa-solid fa-user-tie"></i> Consult an Expert</a>
 
         <div class="nav-section" style="margin-top:10px;">Your Licenses</div>
         <div id="sidebar-licenses">
@@ -1443,7 +1503,8 @@
 
                 <!-- Category Mini Gauges -->
                 <div class="category-gauges">
-                    <div class="mini-gauge-card" onclick="setCategory('General', document.querySelector('.pill:nth-child(2)'))">
+                    <div class="mini-gauge-card"
+                        onclick="setCategory('General', document.querySelector('.pill:nth-child(2)'))">
                         <div class="mini-gauge-icon"><i class="fa-solid fa-file-lines"></i></div>
                         <div class="mini-gauge">
                             <div class="mini-gauge-bg" id="gauge-general"></div>
@@ -1453,7 +1514,8 @@
                         <div class="mini-gauge-label">General</div>
                         <div class="mini-gauge-stats" id="stats-general">0 of 0 completed</div>
                     </div>
-                    <div class="mini-gauge-card" onclick="setCategory('Financial', document.querySelector('.pill:nth-child(3)'))">
+                    <div class="mini-gauge-card"
+                        onclick="setCategory('Financial', document.querySelector('.pill:nth-child(3)'))">
                         <div class="mini-gauge-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
                         <div class="mini-gauge">
                             <div class="mini-gauge-bg" id="gauge-financial"></div>
@@ -1463,7 +1525,8 @@
                         <div class="mini-gauge-label">Financial</div>
                         <div class="mini-gauge-stats" id="stats-financial">0 of 0 completed</div>
                     </div>
-                    <div class="mini-gauge-card" onclick="setCategory('Technical', document.querySelector('.pill:nth-child(4)'))">
+                    <div class="mini-gauge-card"
+                        onclick="setCategory('Technical', document.querySelector('.pill:nth-child(4)'))">
                         <div class="mini-gauge-icon"><i class="fa-solid fa-microchip"></i></div>
                         <div class="mini-gauge">
                             <div class="mini-gauge-bg" id="gauge-technical"></div>
@@ -1473,7 +1536,8 @@
                         <div class="mini-gauge-label">Technical</div>
                         <div class="mini-gauge-stats" id="stats-technical">0 of 0 completed</div>
                     </div>
-                    <div class="mini-gauge-card" onclick="setCategory('Security', document.querySelector('.pill:nth-child(5)'))">
+                    <div class="mini-gauge-card"
+                        onclick="setCategory('Security', document.querySelector('.pill:nth-child(5)'))">
                         <div class="mini-gauge-icon"><i class="fa-solid fa-shield-halved"></i></div>
                         <div class="mini-gauge">
                             <div class="mini-gauge-bg" id="gauge-security"></div>
@@ -1483,7 +1547,8 @@
                         <div class="mini-gauge-label">Security</div>
                         <div class="mini-gauge-stats" id="stats-security">0 of 0 completed</div>
                     </div>
-                    <div class="mini-gauge-card" onclick="setCategory('Operating', document.querySelector('.pill:nth-child(6)'))">
+                    <div class="mini-gauge-card"
+                        onclick="setCategory('Operating', document.querySelector('.pill:nth-child(6)'))">
                         <div class="mini-gauge-icon"><i class="fa-solid fa-gears"></i></div>
                         <div class="mini-gauge">
                             <div class="mini-gauge-bg" id="gauge-operating"></div>
@@ -1531,9 +1596,11 @@
     </div>
 
     <!-- CHANGE PASSWORD MODAL -->
-    <div id="change-password-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div id="change-password-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
         <div style="background:white; width:400px; padding:30px; border-radius:12px; position:relative;">
-            <span onclick="closeChangePasswordModal()" style="position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; color:#666;">&times;</span>
+            <span onclick="closeChangePasswordModal()"
+                style="position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; color:#666;">&times;</span>
             <h2 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-key"></i> Change Password</h2>
             <div style="margin-bottom:15px;">
                 <label style="display:block; margin-bottom:5px; font-weight:500;">New Password</label>
@@ -1637,7 +1704,12 @@
 
         function parseLicenses(profileData) {
             if (!profileData || !profileData.license_type) return;
-            userLicenses = profileData.license_type.split(',').map(s => s.trim());
+            // Handle license_type being either a string or an array
+            if (Array.isArray(profileData.license_type)) {
+                userLicenses = profileData.license_type.map(s => String(s).trim());
+            } else {
+                userLicenses = String(profileData.license_type).split(',').map(s => s.trim());
+            }
             let rawServices = [];
             if (typeof profileData.services === 'string') {
                 try { rawServices = JSON.parse(profileData.services); } catch (e) { }
@@ -2298,7 +2370,8 @@
                 <div id="step-details" style="display:none;">
                     <div class="form-group">
                         <label>Selected Expert</label>
-                        <div id="selected-expert-display" style="padding:12px; background:#eff6ff; border-radius:8px; color:var(--primary); font-weight:600;">
+                        <div id="selected-expert-display"
+                            style="padding:12px; background:#eff6ff; border-radius:8px; color:var(--primary); font-weight:600;">
                         </div>
                     </div>
 
@@ -2323,9 +2396,11 @@
                     </div>
 
                     <div class="form-group phone-field" id="phone-field">
-                        <label for="phone-number"><i class="fa-solid fa-phone"></i> Phone Number (for urgent callback)</label>
+                        <label for="phone-number"><i class="fa-solid fa-phone"></i> Phone Number (for urgent
+                            callback)</label>
                         <input type="tel" id="phone-number" placeholder="Enter your phone number">
-                        <small style="color:#ef4444; margin-top:4px; display:block;">High urgency selected - we'll contact you ASAP</small>
+                        <small style="color:#ef4444; margin-top:4px; display:block;">High urgency selected - we'll
+                            contact you ASAP</small>
                     </div>
 
                     <div class="form-group">

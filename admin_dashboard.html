@@ -822,6 +822,8 @@
                 class="fa-solid fa-file-invoice-dollar"></i> Bills</a>
         <a href="#" onclick="switchView('consultations')" class="nav-item" id="nav-consultations"><i
                 class="fa-solid fa-headset"></i> Consultations</a>
+        <a href="#" onclick="switchView('applications')" class="nav-item" id="nav-applications"><i
+                class="fa-solid fa-file-signature"></i> Applications</a>
         <a href="#" onclick="switchView('contractor-bills')" class="nav-item" id="nav-contractor-bills"><i
                 class="fa-solid fa-file-contract"></i> Contractor Bills</a>
 
@@ -1354,6 +1356,136 @@
                     </div>
                 </div>
                             </div>
+        </div>
+
+        <!-- LICENSE APPLICATIONS VIEW -->
+        <div id="applications-view" style="display:none;">
+            <div class="header">
+                <div>
+                    <h1>License Applications</h1>
+                    <p style="color:#6b7280; margin-top:5px;">Review and approve new license applications</p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <select id="application-filter" onchange="filterApplications()" style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
+                        <option value="all">All Applications</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats-row" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-label">Total Applications</div>
+                    <div class="stat-value" id="total-applications" style="color:var(--primary);">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" style="color:#f59e0b;">Pending Review</div>
+                    <div class="stat-value" id="pending-applications" style="color:#f59e0b;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" style="color:#10b981;">Approved</div>
+                    <div class="stat-value" id="approved-applications" style="color:#10b981;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" style="color:#ef4444;">Rejected</div>
+                    <div class="stat-value" id="rejected-applications" style="color:#ef4444;">0</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Company</th>
+                            <th>License Type</th>
+                            <th>Service</th>
+                            <th>Coverage</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applications-list">
+                        <!-- Rows injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION DETAIL MODAL -->
+    <div id="application-detail-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 700px; height: auto; max-height: 90vh; padding: 0; border-radius: 16px; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 24px 28px; color: white;">
+                <span class="close-modal" onclick="closeApplicationModal()" style="background: rgba(255,255,255,0.2); color: white; border: none;">&times;</span>
+                <h2 style="margin: 0; font-size: 1.25rem;">Application Details</h2>
+                <p style="margin: 5px 0 0 0; opacity: 0.8; font-size: 0.9rem;" id="modal-app-company">Company Name</p>
+            </div>
+            <div style="padding: 28px; overflow-y: auto; max-height: 60vh;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">License Category</label>
+                        <p id="modal-app-license" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Service Type</label>
+                        <p id="modal-app-service" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">CIN Number</label>
+                        <p id="modal-app-cin" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Net Worth</label>
+                        <p id="modal-app-networth" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Paid-up Capital</label>
+                        <p id="modal-app-paidup" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Authorized Signatory</label>
+                        <p id="modal-app-signatory" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Registered Address</label>
+                        <p id="modal-app-address" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Coverage Area</label>
+                        <p id="modal-app-coverage" style="margin: 5px 0 0 0; font-weight: 600;"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Official Email</label>
+                        <p id="modal-app-email" style="margin: 5px 0 0 0; font-weight: 600; color: var(--primary);"></p>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Status</label>
+                        <p id="modal-app-status" style="margin: 5px 0 0 0;"></p>
+                    </div>
+                </div>
+
+                <!-- Admin Notes Input (for rejection reason) -->
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);" id="modal-action-section">
+                    <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Admin Notes (Optional)</label>
+                    <textarea id="modal-admin-notes" placeholder="Add notes or rejection reason..."
+                        style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 8px; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
+
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button class="btn-action" onclick="approveApplication()"
+                            style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px; font-size: 0.95rem;">
+                            <i class="fa-solid fa-check"></i> Approve & Send Invite
+                        </button>
+                        <button class="btn-action" onclick="rejectApplication()"
+                            style="flex: 1; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 14px; font-size: 0.95rem;">
+                            <i class="fa-solid fa-times"></i> Reject
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3720,6 +3852,250 @@
             }
         }
 
+        // --- LICENSE APPLICATIONS FUNCTIONS ---
+        let allApplications = [];
+        let currentApplicationId = null;
+
+        async function fetchApplications() {
+            try {
+                const { data, error } = await client
+                    .from('license_applications')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allApplications = data || [];
+                renderApplications(allApplications);
+                updateApplicationStats();
+            } catch (err) {
+                console.error('Error fetching applications:', err);
+                document.getElementById('applications-list').innerHTML =
+                    '<tr><td colspan="8" style="text-align:center; color:#999;">Error loading applications.</td></tr>';
+            }
+        }
+
+        function updateApplicationStats() {
+            const total = allApplications.length;
+            const pending = allApplications.filter(a => a.status === 'Pending').length;
+            const approved = allApplications.filter(a => a.status === 'Approved').length;
+            const rejected = allApplications.filter(a => a.status === 'Rejected').length;
+
+            document.getElementById('total-applications').textContent = total;
+            document.getElementById('pending-applications').textContent = pending;
+            document.getElementById('approved-applications').textContent = approved;
+            document.getElementById('rejected-applications').textContent = rejected;
+        }
+
+        function filterApplications() {
+            const filter = document.getElementById('application-filter').value;
+            if (filter === 'all') {
+                renderApplications(allApplications);
+            } else {
+                const filtered = allApplications.filter(a => a.status === filter);
+                renderApplications(filtered);
+            }
+        }
+
+        function renderApplications(applications) {
+            const tbody = document.getElementById('applications-list');
+            if (!applications || applications.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#999;">No applications found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = applications.map(app => {
+                const date = new Date(app.created_at).toLocaleDateString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric'
+                });
+
+                let statusBadge = '';
+                if (app.status === 'Pending') {
+                    statusBadge = '<span style="background:#fef3c7; color:#92400e; padding:4px 10px; border-radius:50px; font-size:0.8rem; font-weight:600;">Pending</span>';
+                } else if (app.status === 'Approved') {
+                    statusBadge = '<span style="background:#d1fae5; color:#065f46; padding:4px 10px; border-radius:50px; font-size:0.8rem; font-weight:600;">Approved</span>';
+                } else if (app.status === 'Rejected') {
+                    statusBadge = '<span style="background:#fee2e2; color:#991b1b; padding:4px 10px; border-radius:50px; font-size:0.8rem; font-weight:600;">Rejected</span>';
+                }
+
+                const coverageShort = app.coverage_area && app.coverage_area.length > 30
+                    ? app.coverage_area.substring(0, 30) + '...'
+                    : (app.coverage_area || 'N/A');
+
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td class="client-name">${app.company_name || 'N/A'}</td>
+                        <td>${app.license_category || 'N/A'}</td>
+                        <td style="font-size:0.85rem;">${app.service_type || 'N/A'}</td>
+                        <td style="font-size:0.85rem;" title="${app.coverage_area || ''}">${coverageShort}</td>
+                        <td style="font-size:0.85rem;">${app.official_email || 'N/A'}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn-action" onclick="viewApplication('${app.id}')" style="padding:6px 12px;">
+                                <i class="fa-solid fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewApplication(appId) {
+            const app = allApplications.find(a => a.id === appId);
+            if (!app) return;
+
+            currentApplicationId = appId;
+
+            // Populate modal fields
+            document.getElementById('modal-app-company').textContent = app.company_name || 'N/A';
+            document.getElementById('modal-app-license').textContent = app.license_category || 'N/A';
+            document.getElementById('modal-app-service').textContent = app.service_type || 'N/A';
+            document.getElementById('modal-app-cin').textContent = app.cin_number || 'N/A';
+            document.getElementById('modal-app-networth').textContent = app.net_worth || 'N/A';
+            document.getElementById('modal-app-paidup').textContent = app.paid_up_capital || 'N/A';
+            document.getElementById('modal-app-signatory').textContent = app.auth_signatory || 'N/A';
+            document.getElementById('modal-app-address').textContent = app.registered_address || 'N/A';
+            document.getElementById('modal-app-coverage').textContent = app.coverage_area || 'Nationwide';
+            document.getElementById('modal-app-email').textContent = app.official_email || 'N/A';
+
+            // Status badge
+            let statusHtml = '';
+            if (app.status === 'Pending') {
+                statusHtml = '<span style="background:#fef3c7; color:#92400e; padding:4px 10px; border-radius:50px; font-size:0.85rem; font-weight:600;">Pending</span>';
+            } else if (app.status === 'Approved') {
+                statusHtml = '<span style="background:#d1fae5; color:#065f46; padding:4px 10px; border-radius:50px; font-size:0.85rem; font-weight:600;">Approved</span>';
+            } else if (app.status === 'Rejected') {
+                statusHtml = '<span style="background:#fee2e2; color:#991b1b; padding:4px 10px; border-radius:50px; font-size:0.85rem; font-weight:600;">Rejected</span>';
+            }
+            document.getElementById('modal-app-status').innerHTML = statusHtml;
+
+            // Show/hide action buttons based on status
+            const actionSection = document.getElementById('modal-action-section');
+            if (app.status === 'Pending') {
+                actionSection.style.display = 'block';
+                document.getElementById('modal-admin-notes').value = '';
+            } else {
+                actionSection.style.display = 'none';
+            }
+
+            // Show modal
+            document.getElementById('application-detail-modal').style.display = 'flex';
+        }
+
+        function closeApplicationModal() {
+            document.getElementById('application-detail-modal').style.display = 'none';
+            currentApplicationId = null;
+        }
+
+        async function approveApplication() {
+            if (!currentApplicationId) return;
+
+            const app = allApplications.find(a => a.id === currentApplicationId);
+            if (!app) return;
+
+            if (!app.official_email) {
+                alert('This application does not have an email address. Cannot send invite.');
+                return;
+            }
+
+            const adminNotes = document.getElementById('modal-admin-notes').value;
+
+            if (!confirm(`Are you sure you want to approve this application and send an invite to ${app.official_email}?`)) {
+                return;
+            }
+
+            // Disable buttons
+            const buttons = document.querySelectorAll('#modal-action-section button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            try {
+                // Step 1: Send invite via Supabase Auth (using admin.inviteUserByEmail would require service key)
+                // Instead, we'll use the signUp with auto-confirm or call an Edge Function
+                // For now, let's update the application status and use Supabase's invite flow
+
+                // First, try to invite the user via Edge Function
+                const { data: inviteData, error: inviteError } = await client.functions.invoke('invite-user', {
+                    body: {
+                        email: app.official_email,
+                        applicationId: app.id,
+                        licenseType: app.license_category,
+                        services: app.service_type,
+                        companyName: app.company_name
+                    }
+                });
+
+                if (inviteError) {
+                    // If Edge Function doesn't exist or fails, fall back to updating status only
+                    console.warn('Edge Function not available, updating status only:', inviteError);
+
+                    // Update application status
+                    const { error: updateError } = await client
+                        .from('license_applications')
+                        .update({
+                            status: 'Approved',
+                            approved_at: new Date().toISOString(),
+                            admin_notes: adminNotes || null
+                        })
+                        .eq('id', currentApplicationId);
+
+                    if (updateError) throw updateError;
+
+                    alert(`Application approved!\n\nNote: User invite could not be sent automatically. Please manually invite the user at: ${app.official_email}`);
+                } else {
+                    // Edge Function succeeded
+                    alert(`Application approved!\n\nAn invite email has been sent to ${app.official_email}. The user can set their password and access the dashboard.`);
+                }
+
+                // Refresh the list
+                await fetchApplications();
+                closeApplicationModal();
+
+            } catch (err) {
+                console.error('Error approving application:', err);
+                alert('Error: ' + (err.message || 'Failed to approve application'));
+            } finally {
+                buttons.forEach(btn => btn.disabled = false);
+            }
+        }
+
+        async function rejectApplication() {
+            if (!currentApplicationId) return;
+
+            const adminNotes = document.getElementById('modal-admin-notes').value;
+
+            if (!adminNotes.trim()) {
+                if (!confirm('No rejection reason provided. Are you sure you want to reject without a reason?')) {
+                    return;
+                }
+            }
+
+            if (!confirm('Are you sure you want to reject this application?')) {
+                return;
+            }
+
+            try {
+                const { error } = await client
+                    .from('license_applications')
+                    .update({
+                        status: 'Rejected',
+                        rejected_at: new Date().toISOString(),
+                        admin_notes: adminNotes || null
+                    })
+                    .eq('id', currentApplicationId);
+
+                if (error) throw error;
+
+                alert('Application rejected.');
+                await fetchApplications();
+                closeApplicationModal();
+
+            } catch (err) {
+                console.error('Error rejecting application:', err);
+                alert('Error: ' + (err.message || 'Failed to reject application'));
+            }
+        }
+
         function switchView(viewName) {
             // Prevent restricted users from accessing views other than consultations and contractor-bills
             if (RESTRICTED_USERS.includes(currentAdminEmail) &&
@@ -3733,6 +4109,7 @@
             const bills = document.getElementById('bills-view');
             const consultations = document.getElementById('consultations-view');
             const contractorBills = document.getElementById('contractor-bills-view');
+            const applications = document.getElementById('applications-view');
 
             const navDash = document.getElementById('nav-dashboard');
             const navEmp = document.getElementById('nav-employees');
@@ -3740,6 +4117,7 @@
             const navBills = document.getElementById('nav-bills');
             const navConsult = document.getElementById('nav-consultations');
             const navContractorBills = document.getElementById('nav-contractor-bills');
+            const navApplications = document.getElementById('nav-applications');
 
             // Reset
             dashboard.style.display = 'none';
@@ -3748,12 +4126,14 @@
             bills.style.display = 'none';
             if (consultations) consultations.style.display = 'none';
             if (contractorBills) contractorBills.style.display = 'none';
+            if (applications) applications.style.display = 'none';
             navDash.classList.remove('active');
             if (navEmp) navEmp.classList.remove('active');
             if (navExp) navExp.classList.remove('active');
             if (navBills) navBills.classList.remove('active');
             if (navConsult) navConsult.classList.remove('active');
             if (navContractorBills) navContractorBills.classList.remove('active');
+            if (navApplications) navApplications.classList.remove('active');
 
             if (viewName === 'dashboard') {
                 dashboard.style.display = 'block';
@@ -3776,6 +4156,10 @@
                 if (consultations) consultations.style.display = 'block';
                 if (navConsult) navConsult.classList.add('active');
                 fetchConsultations();
+            } else if (viewName === 'applications') {
+                if (applications) applications.style.display = 'block';
+                if (navApplications) navApplications.classList.add('active');
+                fetchApplications();
             } else if (viewName === 'contractor-bills') {
                 if (contractorBills) contractorBills.style.display = 'block';
                 if (navContractorBills) navContractorBills.classList.add('active');

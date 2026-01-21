@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apply for New License - AA Plus</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -173,7 +175,10 @@
             letter-spacing: 0.5px;
         }
 
-        select, input[type="text"], input[type="email"], textarea {
+        select,
+        input[type="text"],
+        input[type="email"],
+        textarea {
             width: 100%;
             padding: 14px 16px;
             border: 1px solid var(--border-color);
@@ -186,7 +191,10 @@
             transition: all 0.2s;
         }
 
-        select:focus, input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+        select:focus,
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.1);
@@ -205,7 +213,8 @@
             font-size: 0.9rem;
         }
 
-        .req-table th, .req-table td {
+        .req-table th,
+        .req-table td {
             padding: 14px 16px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
@@ -311,8 +320,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Circle/SSA Selection Styles */
@@ -480,7 +496,9 @@
 
         /* Responsive Styles */
         @media (max-width: 768px) {
-            .mobile-menu-toggle { display: block; }
+            .mobile-menu-toggle {
+                display: block;
+            }
 
             .sidebar {
                 position: fixed !important;
@@ -499,7 +517,9 @@
                 left: 0 !important;
             }
 
-            .sidebar-overlay.open { display: block; }
+            .sidebar-overlay.open {
+                display: block;
+            }
 
             body {
                 display: block !important;
@@ -518,40 +538,79 @@
                 box-sizing: border-box;
             }
 
-            .container { max-width: 100%; }
+            .container {
+                max-width: 100%;
+            }
 
             /* Stack grids on mobile */
             .step-card div[style*="grid-template-columns: 1fr 1fr"] {
                 display: block !important;
             }
 
-            .step-card div[style*="grid-template-columns: 1fr 1fr"] > div {
+            .step-card div[style*="grid-template-columns: 1fr 1fr"]>div {
                 margin-bottom: 16px;
             }
 
-            .req-table { font-size: 0.85rem; }
-            .req-table th, .req-table td { padding: 12px 10px; }
-            .req-table th { width: 35%; }
+            .req-table {
+                font-size: 0.85rem;
+            }
 
-            .checkbox-grid { gap: 8px; }
-            .checkbox-item { padding: 8px 12px; font-size: 0.8rem; }
+            .req-table th,
+            .req-table td {
+                padding: 12px 10px;
+            }
 
-            .page-header h1 { font-size: 1.5rem; }
-            h2 { font-size: 1rem; }
+            .req-table th {
+                width: 35%;
+            }
 
-            select, input[type="text"], input[type="email"], textarea {
+            .checkbox-grid {
+                gap: 8px;
+            }
+
+            .checkbox-item {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1rem;
+            }
+
+            select,
+            input[type="text"],
+            input[type="email"],
+            textarea {
                 font-size: 16px;
             }
         }
 
         @media (max-width: 480px) {
-            .main-content { padding: 64px 16px 16px 16px; }
-            .step-card { padding: 20px; border-radius: 12px; }
-            .confirm-box { flex-direction: column; padding: 16px; }
-            .btn-primary { padding: 14px 24px; }
+            .main-content {
+                padding: 64px 16px 16px 16px;
+            }
+
+            .step-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .confirm-box {
+                flex-direction: column;
+                padding: 16px;
+            }
+
+            .btn-primary {
+                padding: 14px 24px;
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- Mobile Menu Toggle -->
     <button class="mobile-menu-toggle" onclick="toggleSidebar()">
@@ -595,20 +654,23 @@
             <div class="step-card" id="step2">
                 <h2>2. Review Requirements & Fees</h2>
                 <div id="req-content">
-                    </div>
-                
+                </div>
+
                 <div class="confirm-box">
                     <input type="radio" id="confirm-radio" name="confirmation" onchange="toggleStep3()">
                     <label for="confirm-radio" class="confirm-label">
-                        I confirm that I have all the required documents and meet all the conditions required to obtain the License.
+                        I confirm that I have all the required documents and meet all the conditions required to obtain
+                        the License.
                     </label>
                 </div>
             </div>
 
             <div class="step-card" id="step3">
                 <h2>3. Application Details</h2>
-                <p style="font-size:0.9rem; color:#666; margin-bottom:20px; background:#fff7ed; padding:10px; border-left:4px solid #f97316;">
-                    <i class="fa-solid fa-circle-info"></i> Please ensure details match exactly with your <strong>Certificate of Incorporation</strong> and <strong>MoA</strong>.
+                <p
+                    style="font-size:0.9rem; color:#666; margin-bottom:20px; background:#fff7ed; padding:10px; border-left:4px solid #f97316;">
+                    <i class="fa-solid fa-circle-info"></i> Please ensure details match exactly with your
+                    <strong>Certificate of Incorporation</strong> and <strong>MoA</strong>.
                 </p>
 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
@@ -654,7 +716,8 @@
                         <i class="fa-solid fa-paper-plane"></i> Submit Application Request
                     </button>
                     <p style="text-align:center; margin-top:15px; font-size:0.85rem; color:#888;">
-                        By clicking Submit, you agree to our Terms of Service. A notification will be sent to the Admin team.
+                        By clicking Submit, you agree to our Terms of Service. A notification will be sent to the Admin
+                        team.
                     </p>
                 </div>
             </div>
@@ -801,14 +864,14 @@
         ];
 
         // 3. PAGE LOGIC
-        
+
         // A. Security Check (Admin Only) & Load Existing Licenses
         async function checkAccess() {
             const { data: { user } } = await client.auth.getUser();
-            if(!user) window.location.href = 'index.html';
+            if (!user) window.location.href = 'index.html';
 
             const { data: profile } = await client.from('profiles').select('*').eq('id', user.id).single();
-            if(profile.parent_id) {
+            if (profile.parent_id) {
                 document.querySelector('.container').innerHTML = `
                     <div style="text-align:center; padding:50px;">
                         <i class="fa-solid fa-lock" style="font-size:3rem; color:#ef4444;"></i>
@@ -822,7 +885,12 @@
 
             // Load user's existing licenses and services
             if (profile.license_type) {
-                userExistingLicenses = profile.license_type.split(',').map(s => s.trim());
+                // Handle license_type being either a string or an array
+                if (Array.isArray(profile.license_type)) {
+                    userExistingLicenses = profile.license_type.map(s => String(s).trim());
+                } else {
+                    userExistingLicenses = String(profile.license_type).split(',').map(s => s.trim());
+                }
             }
 
             // Parse services - format is ["UL:ISP-A", "UL:NLD", "UL(VNO):Access Service"]
@@ -851,7 +919,7 @@
             svcSelect.innerHTML = '<option value="">-- Select Service --</option>';
             svcSelect.disabled = true;
 
-            if(cat && licenseData[cat]) {
+            if (cat && licenseData[cat]) {
                 svcSelect.disabled = false;
 
                 // Get services user already has for this license category
@@ -885,7 +953,7 @@
         function showRequirements() {
             const cat = document.getElementById('license-category').value;
             const svc = document.getElementById('service-type').value;
-            if(!svc) return;
+            if (!svc) return;
 
             // Reset selections
             selectedCircles = [];
@@ -1171,10 +1239,10 @@
             document.getElementById('calc-entry').innerHTML = entryDisplay;
             document.getElementById('calc-pbg').innerHTML =
                 currentBaseFees.pbg === 0 ? 'Nil' :
-                `${currentBaseFees.pbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(pbgTotal)}</strong>`;
+                    `${currentBaseFees.pbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(pbgTotal)}</strong>`;
             document.getElementById('calc-fbg').innerHTML =
                 currentBaseFees.fbg === 0 ? 'Nil' :
-                `${currentBaseFees.fbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(fbgTotal)}</strong>`;
+                    `${currentBaseFees.fbgText} × ${count} ${unit}${count > 1 ? 's' : ''} = <strong>${formatIndianCurrency(fbgTotal)}</strong>`;
             document.getElementById('calc-total').textContent = formatIndianCurrency(grandTotal);
         }
 
@@ -1289,7 +1357,7 @@
         function toggleStep3() {
             const isChecked = document.getElementById('confirm-radio').checked;
             document.getElementById('step3').style.display = isChecked ? 'block' : 'none';
-            if(isChecked) {
+            if (isChecked) {
                 // Scroll to form smoothly
                 document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
             }
@@ -1309,7 +1377,7 @@
             const paidup = document.getElementById('paid-up').value;
             const auth = document.getElementById('auth-sig').value;
 
-            if(!company || !cin || !auth || !networth) {
+            if (!company || !cin || !auth || !networth) {
                 alert("Please fill in all mandatory fields (Company Name, CIN, Net Worth, Auth Signatory).");
                 return;
             }
@@ -1344,6 +1412,7 @@
                 }
 
                 // Insert into Supabase
+                const officialEmail = document.getElementById('official-email').value;
                 const { error } = await client.from('license_applications').insert({
                     user_id: user.id,
                     license_category: cat,
@@ -1357,10 +1426,11 @@
                     coverage_area: coverageArea,
                     selected_circles: selectedCircles.length > 0 ? selectedCircles : null,
                     selected_ssas: selectedSSAs.length > 0 ? selectedSSAs : null,
+                    official_email: officialEmail,
                     status: 'Pending'
                 });
 
-                if(error) throw error;
+                if (error) throw error;
 
                 // Success UI
                 let coverageText = '';
@@ -1394,4 +1464,5 @@
         }
     </script>
 </body>
+
 </html>
