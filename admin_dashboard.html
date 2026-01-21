@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Using standard fonts for Invoice to match PDF -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -452,7 +453,8 @@
                 grid-template-columns: 1fr 1fr;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 14px 20px;
             }
 
@@ -463,7 +465,9 @@
 
         /* Responsive Styles - Mobile */
         @media (max-width: 768px) {
-            .mobile-menu-toggle { display: block; }
+            .mobile-menu-toggle {
+                display: block;
+            }
 
             .sidebar {
                 position: fixed !important;
@@ -482,7 +486,9 @@
                 left: 0 !important;
             }
 
-            .sidebar-overlay.open { display: block; }
+            .sidebar-overlay.open {
+                display: block;
+            }
 
             body {
                 display: block !important;
@@ -543,7 +549,8 @@
                 min-width: 600px;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 14px 16px;
                 font-size: 0.85rem;
             }
@@ -567,7 +574,7 @@
                 display: block !important;
             }
 
-            .modal-content .input-group[style*="grid-template-columns"] > div {
+            .modal-content .input-group[style*="grid-template-columns"]>div {
                 margin-bottom: 16px;
             }
 
@@ -610,7 +617,8 @@
                 min-width: 500px;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 12px 10px;
                 font-size: 0.8rem;
             }
@@ -845,8 +853,7 @@
                     <h1>Recurring Revenue</h1>
                     <p style="color:#6b7280; margin-top:5px;">Overview of monthly recurring client payments</p>
                 </div>
-                <button class="btn-action primary"
-                    onclick="openAddClientModal()">
+                <button class="btn-action primary" onclick="openAddClientModal()">
                     <i class="fa-solid fa-plus"></i> Add New
                 </button>
             </div>
@@ -1157,7 +1164,8 @@
                     <p style="color:#6b7280; margin-top:5px;">Manage client consultation requests</p>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <select id="consultation-filter" onchange="filterConsultations()" style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
+                    <select id="consultation-filter" onchange="filterConsultations()"
+                        style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
                         <option value="all">All Requests</option>
                         <option value="pending">Pending</option>
                         <option value="in_progress">In Progress</option>
@@ -1210,7 +1218,8 @@
             <div class="header">
                 <div>
                     <h1>Contractor Bills</h1>
-                    <p style="color:#6b7280; margin-top:5px;" id="contractor-bills-subtitle">View and download contractor bill submissions</p>
+                    <p style="color:#6b7280; margin-top:5px;" id="contractor-bills-subtitle">View and download
+                        contractor bill submissions</p>
                 </div>
             </div>
 
@@ -1218,11 +1227,13 @@
             <div id="contractor-upload-section" style="display:none; margin-bottom:30px;">
                 <!-- Generate Bill Form -->
                 <div class="table-container" style="padding:24px; margin-bottom:20px;">
-                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-file-invoice"></i> Generate Monthly Bill</h3>
+                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-file-invoice"></i> Generate
+                        Monthly Bill</h3>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap:15px; align-items:end;">
                         <div class="input-group">
                             <label>Month</label>
-                            <select id="generate-bill-month" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                            <select id="generate-bill-month"
+                                style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
                                 <option value="1">January</option>
                                 <option value="2">February</option>
                                 <option value="3">March</option>
@@ -1239,7 +1250,8 @@
                         </div>
                         <div class="input-group">
                             <label>Year</label>
-                            <select id="generate-bill-year" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                            <select id="generate-bill-year"
+                                style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
                                 <!-- Options populated by JS -->
                             </select>
                         </div>
@@ -1259,17 +1271,20 @@
                         </button>
                     </div>
                     <p style="color:#6b7280; font-size:0.85rem; margin-top:12px; margin-bottom:0;">
-                        <i class="fa-solid fa-info-circle"></i> 18% IGST will be added automatically. Invoice will be generated and saved.
+                        <i class="fa-solid fa-info-circle"></i> 18% IGST will be added automatically. Invoice will be
+                        generated and saved.
                     </p>
                 </div>
 
                 <!-- Or Upload Existing Bill -->
                 <div class="table-container" style="padding:24px;">
-                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-upload"></i> Or Upload Existing Bill</h3>
+                    <h3 style="margin-top:0; margin-bottom:20px;"><i class="fa-solid fa-upload"></i> Or Upload Existing
+                        Bill</h3>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 2fr auto; gap:15px; align-items:end;">
                         <div class="input-group">
                             <label>Month</label>
-                            <select id="contractor-bill-month" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                            <select id="contractor-bill-month"
+                                style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
                                 <option value="1">January</option>
                                 <option value="2">February</option>
                                 <option value="3">March</option>
@@ -1286,7 +1301,8 @@
                         </div>
                         <div class="input-group">
                             <label>Year</label>
-                            <select id="contractor-bill-year" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                            <select id="contractor-bill-year"
+                                style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
                                 <!-- Options populated by JS -->
                             </select>
                         </div>
@@ -1329,35 +1345,6 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- CONSULTATION DETAIL MODAL -->
-    <div id="consultation-modal" class="modal-overlay">
-        <div class="modal-content" style="width: 600px; height: auto; max-height: 90vh; padding: 0; border-radius: 12px; overflow:hidden;">
-            <div style="background:var(--primary); color:white; padding:20px; display:flex; justify-content:space-between; align-items:center;">
-                <h2 style="margin:0; font-size:1.25rem;"><i class="fa-solid fa-headset"></i> Consultation Details</h2>
-                <span style="cursor:pointer; font-size:1.5rem;" onclick="closeConsultationModal()">&times;</span>
-            </div>
-            <div style="padding:24px; overflow-y:auto;">
-                <div id="consultation-detail-content">
-                    <!-- Content injected via JS -->
-                </div>
-                <div style="margin-top:20px; padding-top:20px; border-top:1px solid #e5e7eb;">
-                    <label style="display:block; font-weight:600; margin-bottom:8px;">Update Status</label>
-                    <div style="display:flex; gap:10px;">
-                        <select id="consultation-status-select" style="flex:1; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
-                            <option value="pending">Pending</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="resolved">Resolved</option>
-                        </select>
-                        <button class="btn-action" style="background:var(--primary); color:white; border:none; padding:10px 20px;" onclick="updateConsultationStatus()">
-                            Update
-                        </button>
-                    </div>
-                </div>
-                            </div>
-        </div>
-
         <!-- LICENSE APPLICATIONS VIEW -->
         <div id="applications-view" style="display:none;">
             <div class="header">
@@ -1366,7 +1353,8 @@
                     <p style="color:#6b7280; margin-top:5px;">Review and approve new license applications</p>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <select id="application-filter" onchange="filterApplications()" style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
+                    <select id="application-filter" onchange="filterApplications()"
+                        style="padding:8px 12px; border:1px solid #d1d5db; border-radius:6px;">
                         <option value="all">All Applications</option>
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
@@ -1414,63 +1402,123 @@
                 </table>
             </div>
         </div>
+
     </div>
+
+    <!-- CONSULTATION DETAIL MODAL -->
+    <div id="consultation-modal" class="modal-overlay">
+        <div class="modal-content"
+            style="width: 600px; height: auto; max-height: 90vh; padding: 0; border-radius: 12px; overflow:hidden;">
+            <div
+                style="background:var(--primary); color:white; padding:20px; display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="margin:0; font-size:1.25rem;"><i class="fa-solid fa-headset"></i> Consultation Details</h2>
+                <span style="cursor:pointer; font-size:1.5rem;" onclick="closeConsultationModal()">&times;</span>
+            </div>
+            <div style="padding:24px; overflow-y:auto;">
+                <div id="consultation-detail-content">
+                    <!-- Content injected via JS -->
+                </div>
+                <div style="margin-top:20px; padding-top:20px; border-top:1px solid #e5e7eb;">
+                    <label style="display:block; font-weight:600; margin-bottom:8px;">Update Status</label>
+                    <div style="display:flex; gap:10px;">
+                        <select id="consultation-status-select"
+                            style="flex:1; padding:10px; border:1px solid #d1d5db; border-radius:6px;">
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                        <button class="btn-action"
+                            style="background:var(--primary); color:white; border:none; padding:10px 20px;"
+                            onclick="updateConsultationStatus()">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- APPLICATION DETAIL MODAL -->
     <div id="application-detail-modal" class="modal-overlay">
-        <div class="modal-content" style="width: 700px; height: auto; max-height: 90vh; padding: 0; border-radius: 16px; overflow: hidden;">
-            <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 24px 28px; color: white;">
-                <span class="close-modal" onclick="closeApplicationModal()" style="background: rgba(255,255,255,0.2); color: white; border: none;">&times;</span>
+        <div class="modal-content"
+            style="width: 700px; height: auto; max-height: 90vh; padding: 0; border-radius: 16px; overflow: hidden;">
+            <div
+                style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 24px 28px; color: white;">
+                <span class="close-modal" onclick="closeApplicationModal()"
+                    style="background: rgba(255,255,255,0.2); color: white; border: none;">&times;</span>
                 <h2 style="margin: 0; font-size: 1.25rem;">Application Details</h2>
                 <p style="margin: 5px 0 0 0; opacity: 0.8; font-size: 0.9rem;" id="modal-app-company">Company Name</p>
             </div>
             <div style="padding: 28px; overflow-y: auto; max-height: 60vh;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">License Category</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">License
+                            Category</label>
                         <p id="modal-app-license" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Service Type</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Service
+                            Type</label>
                         <p id="modal-app-service" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">CIN Number</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">CIN
+                            Number</label>
                         <p id="modal-app-cin" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Net Worth</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Net
+                            Worth</label>
                         <p id="modal-app-networth" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Paid-up Capital</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Paid-up
+                            Capital</label>
                         <p id="modal-app-paidup" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Authorized Signatory</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Authorized
+                            Signatory</label>
                         <p id="modal-app-signatory" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div style="grid-column: span 2;">
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Registered Address</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Registered
+                            Address</label>
                         <p id="modal-app-address" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div style="grid-column: span 2;">
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Coverage Area</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Coverage
+                            Area</label>
                         <p id="modal-app-coverage" style="margin: 5px 0 0 0; font-weight: 600;"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Official Email</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Official
+                            Email</label>
                         <p id="modal-app-email" style="margin: 5px 0 0 0; font-weight: 600; color: var(--primary);"></p>
                     </div>
                     <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Status</label>
+                        <label
+                            style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Status</label>
                         <p id="modal-app-status" style="margin: 5px 0 0 0;"></p>
                     </div>
                 </div>
 
                 <!-- Admin Notes Input (for rejection reason) -->
-                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);" id="modal-action-section">
-                    <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Admin Notes (Optional)</label>
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);"
+                    id="modal-action-section">
+                    <label
+                        style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600;">Admin
+                        Notes (Optional)</label>
                     <textarea id="modal-admin-notes" placeholder="Add notes or rejection reason..."
                         style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 8px; min-height: 80px; font-family: inherit; resize: vertical;"></textarea>
 
@@ -3942,7 +3990,7 @@
         }
 
         function viewApplication(appId) {
-            const app = allApplications.find(a => a.id === appId);
+            const app = allApplications.find(a => a.id == appId); // Use == to handle string/number comparison
             if (!app) return;
 
             currentApplicationId = appId;
@@ -4223,7 +4271,7 @@
             const countSpan = document.getElementById('contractor-bills-count');
 
             const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                               'July', 'August', 'September', 'October', 'November', 'December'];
+                'July', 'August', 'September', 'October', 'November', 'December'];
 
             if (allContractorBills.length === 0) {
                 tbody.innerHTML = '';
@@ -4390,8 +4438,8 @@
         // Number to words conversion for Indian currency
         function numberToWordsIndian(num) {
             const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
-                         'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
-                         'Seventeen', 'Eighteen', 'Nineteen'];
+                'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+                'Seventeen', 'Eighteen', 'Nineteen'];
             const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
             if (num === 0) return 'Zero';
@@ -4443,7 +4491,7 @@
             }
 
             const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                               'July', 'August', 'September', 'October', 'November', 'December'];
+                'July', 'August', 'September', 'October', 'November', 'December'];
             const monthName = monthNames[month - 1];
             const financialYear = getFinancialYear(month, year);
             const invoiceNoStr = String(invoiceNo).padStart(3, '0');
@@ -4687,7 +4735,7 @@
             await new Promise((resolve) => {
                 const signImg = new Image();
                 signImg.crossOrigin = 'anonymous';
-                signImg.onload = function() {
+                signImg.onload = function () {
                     try {
                         doc.addImage(signImg, 'PNG', 115, signatureY, 50, 20);
                     } catch (e) {
@@ -4695,7 +4743,7 @@
                     }
                     resolve();
                 };
-                signImg.onerror = function() {
+                signImg.onerror = function () {
                     console.warn('Failed to load signature image');
                     resolve();
                 };
