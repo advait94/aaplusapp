@@ -29,6 +29,37 @@ Frontend (Static HTML/JS)     →    Supabase (PostgreSQL + Auth + Storage)
 
 **No traditional backend** - all logic is either client-side JavaScript or Supabase Edge Functions. Database webhooks trigger n8n workflows for async processing (e.g., sending invoices via email).
 
+### Project Structure
+
+```
+ComplianceApp/
+├── assets/                     # Images & media files
+│   ├── AAPlus Logo.png         # Company logo (used across all pages)
+│   ├── papasignature.PNG       # Director signature for invoices
+│   └── sign Final.png          # Alternate signature
+│
+├── docs/                       # Reference documents (not deployed)
+│   ├── GCX Invoice Format.pdf  # Invoice template reference
+│   ├── N8N_INVOICE_SETUP.md    # n8n workflow setup guide
+│   └── [expense/invoice files] # Sample documents
+│
+├── sql/                        # Database schemas
+│   ├── database_setup.sql      # Main schema with RLS policies
+│   ├── contractor_bills_schema.sql
+│   └── test_compliance_data.sql
+│
+├── dot-ingest/                 # AI knowledge base ingestion scripts
+│   ├── ingest.js               # PDF document ingestion
+│   └── ingest-excel-v2.js      # Excel file ingestion
+│
+├── index.html                  # Login portal
+├── client_dashboard.html       # Client interface
+├── admin_dashboard.html        # Admin interface
+├── apply_license.html          # License application form
+├── profile.html                # Password reset page
+└── presentation.html           # Sales presentation
+```
+
 ### Key Files
 
 | File | Purpose |
@@ -37,8 +68,9 @@ Frontend (Static HTML/JS)     →    Supabase (PostgreSQL + Auth + Storage)
 | `client_dashboard.html` | Client interface: compliance tracking, AI chat, expert consultation |
 | `admin_dashboard.html` | Admin interface: invoice management, client/employee management |
 | `apply_license.html` | New telecom license application form |
-| `database_setup.sql` | Complete PostgreSQL schema with RLS policies and vector functions |
+| `sql/database_setup.sql` | Complete PostgreSQL schema with RLS policies and vector functions |
 | `dot-ingest/ingest.js` | PDF ingestion script for AI knowledge base |
+| `assets/` | All images referenced by HTML files |
 
 ### Database Tables (Key)
 
