@@ -1,6 +1,10 @@
 # Temp files
 tmpclaude-*
 *.tmp
+nul
+
+# Executables
+*.exe
 
 # OS files
 .DS_Store

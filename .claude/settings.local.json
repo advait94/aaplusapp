@@ -30,7 +30,19 @@
       "Bash(npm start)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Telecommunications Compliance and Invoice Management Platform\n\n- Login portal with Supabase authentication\n- Client dashboard with compliance tracking, AI chatbot, expert consultation\n- Admin dashboard with invoice generation, client/employee management\n- Database schema with pgvector for AI knowledge base\n- n8n webhook integration for automated invoice emails\n- DOT knowledge base ingestion scripts\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(gh:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "WebSearch",
+      "Bash(printf:*)",
+      "Bash(git credential:*)",
+      "Bash(git restore:*)",
+      "Bash(cd:*)",
+      "Bash(ping:*)",
+      "Skill(ui-ux-pro-max)",
+      "Bash(python scripts/search.py:*)"
     ]
   }
 }
